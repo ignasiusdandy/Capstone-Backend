@@ -1,2 +1,2 @@
 # Desain ERD database
-![Uploading petshop.png…]()
+![alt text](?raw=true)
