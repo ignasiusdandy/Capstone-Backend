@@ -1,6 +1,6 @@
 ## Table of Content
-- [Desain ERD](#desain-erd)
-- [Format Database](#format-database)
+- [Desain ERD](#desain-erd-database)
+- [Format Database](#create-database)
 
 # Desain ERD database
 ![alt text](https://github.com/ignasiusdandy/Capstone-Backend/blob/master/src/petshop.png?raw=true)
