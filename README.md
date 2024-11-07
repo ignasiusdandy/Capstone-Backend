@@ -5,6 +5,7 @@
 CREATE DATABASE petpoint;
 USE petpoint;
 
+```
 # -- Tabel T_user
 CREATE TABLE T_user (
     id_user CHAR(10) PRIMARY KEY,
@@ -47,3 +48,4 @@ CREATE TABLE ask (
     FOREIGN KEY (em_id) REFERENCES T_emergency(em_id) ON DELETE CASCADE,
     FOREIGN KEY (id_user) REFERENCES T_user(id_user) ON DELETE CASCADE
 );
+```
