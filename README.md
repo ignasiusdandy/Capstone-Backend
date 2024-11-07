@@ -2,10 +2,12 @@
 ![alt text](https://github.com/ignasiusdandy/Capstone-Backend/blob/master/src/petshop.png?raw=true)
 
 
+Buat Database
+```
 CREATE DATABASE petpoint;
 USE petpoint;
 
-```
+
 # -- Tabel T_user
 CREATE TABLE T_user (
     id_user CHAR(10) PRIMARY KEY,
