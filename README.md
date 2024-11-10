@@ -12,7 +12,6 @@
 | ---------------------- | ----------- | --------------------------- | ------------ |
 | /login                 | POST        | Log in a user               | Not Required |
 | /register              | POST        | Register a new user         | Not Required |
-| /logout                | POST        | Log out a user              | Not Required |
 
 ## Create Database
 ```
