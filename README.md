@@ -100,10 +100,19 @@ vm instance =
 sql = 3000
 
 ## developer
-pastikan port sql anda 3307! atau jika ingin ganti port silahkan ganti di .env <br>
+lakukan git clone dan masuk ke folder backend
+```
+git clone https://github.com/ignasiusdandy/Capstone-Backend.git
+cd backend
+``` 
+pastikan port sql anda 3307 atau jika ingin ganti port silahkan ganti di .env <br>
 Buat database dengan nama = **db-petpoint** <br>
 lakukan pembuatan database seperti langkah diatas! <br>
 lakukan penginstalan npm dengan versi v18.13.0 <br>
 ```
 nvm install 18.13.0
+```
+jalankan npmnya menggunakan
+```
+npm run start
 ```
