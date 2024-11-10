@@ -1,6 +1,7 @@
 ## Table of Content
 - [Desain ERD](#desain-erd-database)
 - [Format Database](#create-database)
+- [developer localhost]($developer)
 
 ## Desain ERD database
 ![alt text](https://github.com/ignasiusdandy/Capstone-Backend/blob/master/src/petshop.png?raw=true)
@@ -26,14 +27,14 @@ CREATE TABLE T_user (
     email_user VARCHAR(30),
     password_user CHAR(70),
     created_at DATE,
-    Role_as VARCHAR(50),
+    Role VARCHAR(50),
     Pic_Profile VARCHAR(100),
     Location VARCHAR(100)
 );
 
 # -- Tabel T_article
 CREATE TABLE T_article (
-    id_article CHAR(10) PRIMARY KEY,
+    id_article INT PRIMARY KEY,
     name_author VARCHAR(100),
     title VARCHAR(50),
     content VARCHAR(256),
@@ -53,7 +54,7 @@ CREATE TABLE T_emergency (
 # -- Tabel ask (untuk relasi antara T_user dan T_emergency)
 CREATE TABLE ask (
     em_id INT,
-    id_user INT,
+    id_user CHAR(10),
     date_end DATE,
     pet_category VARCHAR(50),
     evidence_saved VARCHAR(100),
@@ -62,9 +63,25 @@ CREATE TABLE ask (
     FOREIGN KEY (id_user) REFERENCES T_user(id_user) ON DELETE CASCADE
 );
 ```
+
 ## penginstalan
 ```
-menginstall docker
+npm install dotenv
+npm install mysql
+npm install jsonwebtoken
+```
+
+## penginstalan localhost
+```
+
+```
+
+## penginstalan with docker
+```
+-- menginstall docker
+sudo apt update
+sudo apt install docker-compose -y
+docker-compose --version
 docker-compose up -d
 
 --Cek id
@@ -82,3 +99,12 @@ docker-compose up -d
 # port
 vm instance =
 sql = 3000
+
+## developer
+pastikan port sql anda 3307! atau jika ingin ganti port silahkan ganti di .env <br>
+Buat database dengan nama = **db-petpoint** <br>
+lakukan pembuatan database seperti langkah diatas! <br>
+lakukan penginstalan npm dengan versi v18.13.0 <br>
+```
+nvm install 18.13.0
+```
