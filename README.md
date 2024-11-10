@@ -2,11 +2,18 @@
 - [Desain ERD](#desain-erd-database)
 - [Format Database](#create-database)
 
-# Desain ERD database
+## Desain ERD database
 ![alt text](https://github.com/ignasiusdandy/Capstone-Backend/blob/master/src/petshop.png?raw=true)
 
 
-# Create Database
+## Endpoint Routes
+| Route                  | HTTP Method | Description                 | Auth         |
+| ---------------------- | ----------- | --------------------------- | ------------ |
+| /login                 | POST        | Log in a user               | Not Required |
+| /register              | POST        | Register a new user         | Not Required |
+| /logout                | POST        | Log out a user              | Not Required |
+
+## Create Database
 ```
 CREATE DATABASE petpoint;
 USE petpoint;
@@ -55,3 +62,23 @@ CREATE TABLE ask (
     FOREIGN KEY (id_user) REFERENCES T_user(id_user) ON DELETE CASCADE
 );
 ```
+## penginstalan
+```
+menginstall docker
+docker-compose up -d
+
+--Cek id
+docker ps
+
+-- masuk ke mysql
+docker exec -it <container_id_or_name> mysql -u root -p
+
+-- mematikkan docker
+docker-compose down
+docker-compose build --no-cache
+docker-compose up -d
+```
+
+# port
+vm instance =
+sql = 3000
