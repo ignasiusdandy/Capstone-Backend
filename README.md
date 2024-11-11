@@ -8,10 +8,11 @@
 
 
 ## Endpoint Routes
-| Route                  | HTTP Method | Description                 | Auth         |
+| Route                  | HTTP Method | Description                 | Token        |
 | ---------------------- | ----------- | --------------------------- | ------------ |
 | /login                 | POST        | Log in a user               | Not Required |
 | /register              | POST        | Register a new user         | Not Required |
+| /logout                | POST        | Logout account              | Required     |
 
 ## Create Database
 ```
@@ -33,7 +34,7 @@ CREATE TABLE T_user (
 
 # -- Tabel T_article
 CREATE TABLE T_article (
-    id_article INT PRIMARY KEY,
+    id_article INT,
     name_author VARCHAR(100),
     title VARCHAR(50),
     content VARCHAR(256),
@@ -42,7 +43,7 @@ CREATE TABLE T_article (
 
 # -- Tabel T_emergency
 CREATE TABLE T_emergency (
-    em_id INT PRIMARY KEY AUTO_INCREMENT,
+    em_id INT,
     pic_pet VARCHAR(100),
     pet_category VARCHAR(10),
     pet_community VARCHAR(100),
