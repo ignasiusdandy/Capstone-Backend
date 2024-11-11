@@ -158,27 +158,35 @@ const loginHandler = async (request, h) => {
 };
 
 const revokedTokens = new Set();
+
 const logoutHandler = async (request, h) => {
+  console.log('Logout handler diakses');
+
+  const authHeader = request.headers.authorization;
+  if (!authHeader) {
+    return h.response({
+      status: 'fail',
+      message: 'Token tidak ditemukan.',
+    }).code(401);
+  }
+
+  const token = authHeader.split(' ')[1];
   try {
-    console.log('Logout handler diakses');
-
-    const authHeader = request.headers.authorization;
-    if (!authHeader) {
-      return h.response({
-        status: 'fail',
-        message: 'Token tidak ditemukan.',
-      }).code(401);
-    }
-
-    const token = authHeader.split(' ')[1]; 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
+    if (revokedTokens.has(token)) {
+      console.log('Token sudah dicabut sebelumnya');
+      return h.response({
+        status: 'fail',
+        message: 'Token sudah tidak valid',
+      }).code(401);
+    }
     revokedTokens.add(token);
     console.log('Token dicabut untuk user:', decoded.userId);
 
     return h.response({
       status: 'success',
-      message: 'Logout berhasil',
+      message: 'Logout berhasil, token dicabut.',
     }).code(200);
 
   } catch (error) {
