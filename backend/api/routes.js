@@ -1,4 +1,5 @@
 const { registerHandler, loginHandler, logoutHandler } = require('./handler/authHandler');
+const { createEmergency } = require('./handler/emergencyHandler');
 const verifyTokenMiddleware = require('./middleware/verifyTokenMiddleware');
 
 const routes = [
@@ -17,18 +18,26 @@ const routes = [
     path: '/logout',
     handler: logoutHandler,
   },
+  // {
+  //   method: 'GET',
+  //   path: '/api/dashboard',
+  //   handler: (request, h) => {
+  //     return h.response({
+  //       status: 'success',
+  //       message: 'Selamat datang di dashboard',
+  //       data: request.auth,
+  //     });
+  //   },
+  //   options: {
+  //     pre: [verifyTokenMiddleware],
+  //   },
+  // },
   {
-    method: 'GET',
-    path: '/api/dashboard', 
-    handler: (request, h) => {
-      return h.response({
-        status: 'success',
-        message: 'Selamat datang di dashboard',
-        data: request.auth, 
-      });
-    },
-    options: {
-      pre: [verifyTokenMiddleware], 
+    method: 'POST',
+    path: '/emergency/create',
+    handler: createEmergency,
+    options : {
+      pre : [verifyTokenMiddleware],
     },
   },
 ];

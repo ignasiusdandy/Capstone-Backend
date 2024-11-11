@@ -120,8 +120,8 @@ const loginHandler = async (request, h) => {
 
 
     const token = jwt.sign(
-      { userId: user.id_user, role: user.role },
-      process.env.JWT_SECRET ,
+      { userId: user.id_user },
+      process.env.JWT_SECRET,
       { expiresIn: '1h' }
     );
 

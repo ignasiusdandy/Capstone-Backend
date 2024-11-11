@@ -13,6 +13,7 @@
 | /login                 | POST        | Log in a user               | Not Required |
 | /register              | POST        | Register a new user         | Not Required |
 | /logout                | POST        | Logout account              | Required     |
+| /emergency/create      | POST        | Create a new emergency      | Required     |
 
 ## Create Database
 ```
@@ -48,6 +49,7 @@ CREATE TABLE T_emergency (
     pet_category VARCHAR(10),
     pet_community VARCHAR(100),
     pet_location VARCHAR(100),
+    created_at DATE,
     pet_status VARCHAR(10)
 );
 
