@@ -38,6 +38,14 @@ const registerHandler = async (request, h) => {
   }
 
   try {
+    const [existingUser] = await db.query('SELECT * FROM T_user WHERE email_user = ?', [email_user]);
+    if (existingUser.length > 0) {
+      console.log('Registrasi gagal: Email sudah digunakan');
+      return h.response({
+        status: 'fail',
+        message: 'Gagal mendaftarkan. Email sudah digunakan.',
+      }).code(400);
+    }
     const hashedPassword = await bcrypt.hash(password_user, 10);
 
     const [result] = await db.query(
@@ -109,9 +117,11 @@ const loginHandler = async (request, h) => {
       }).code(401);
     }
 
+
+
     const token = jwt.sign(
       { userId: user.id_user, role: user.role },
-      process.env.JWT_SECRET || 'your_secret_key',
+      process.env.JWT_SECRET ,
       { expiresIn: '1h' }
     );
 
@@ -147,4 +157,38 @@ const loginHandler = async (request, h) => {
   }
 };
 
-module.exports = { registerHandler, loginHandler };
+const revokedTokens = new Set();
+const logoutHandler = async (request, h) => {
+  try {
+    console.log('Logout handler diakses');
+
+    const authHeader = request.headers.authorization;
+    if (!authHeader) {
+      return h.response({
+        status: 'fail',
+        message: 'Token tidak ditemukan.',
+      }).code(401);
+    }
+
+    const token = authHeader.split(' ')[1]; 
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    revokedTokens.add(token);
+    console.log('Token dicabut untuk user:', decoded.userId);
+
+    return h.response({
+      status: 'success',
+      message: 'Logout berhasil',
+    }).code(200);
+
+  } catch (error) {
+    console.error('Error pada logout:', error);
+    return h.response({
+      status: 'error',
+      message: 'Terjadi kesalahan saat logout.',
+    }).code(500);
+  }
+};
+
+
+module.exports = { registerHandler, loginHandler, logoutHandler };
