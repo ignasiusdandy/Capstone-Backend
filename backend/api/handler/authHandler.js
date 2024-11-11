@@ -59,6 +59,7 @@ const registerHandler = async (request, h) => {
       message: 'User berhasil didaftarkan',
       data: {
         userId: id_user,
+        RoleAs: role,
       },
     });
     response.code(201);
@@ -107,6 +108,7 @@ const loginHandler = async (request, h) => {
     }
 
     const user = rows[0];
+    console.log('User data:', user); 
 
     const isMatch = await bcrypt.compare(password_user, user.password_user);
     if (!isMatch) {
@@ -120,12 +122,14 @@ const loginHandler = async (request, h) => {
 
 
     const token = jwt.sign(
-      { userId: user.id_user },
+      { userId: user.id_user, RoleAs: user.role },
       process.env.JWT_SECRET,
       { expiresIn: '1h' }
     );
 
-    console.log('Login berhasil, token dibuat:', token);
+    console.log(user.id_user);
+    console.log(user.role);
+
 
     let dashboard;
     if (user.role === 'user') {
@@ -135,8 +139,10 @@ const loginHandler = async (request, h) => {
       dashboard = 'dashboardCommunity';
       console.log('User dengan role "community" diarahkan ke dashboardCommunity');
     } else {
-      console.log('Role tidak diketahui:', user.role);
-      dashboard = 'dashboardUser';
+      return h.response({
+        status: 'fail',
+        message: 'Role not defined',
+      }).code(401);
     }
     return h.response({
       status: 'success',

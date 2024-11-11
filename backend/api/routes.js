@@ -33,13 +33,19 @@ const routes = [
   //   },
   // },
   {
-    method: 'POST',
-    path: '/emergency/create',
-    handler: createEmergency,
-    options : {
-      pre : [verifyTokenMiddleware],
+  method: 'POST',
+  path: '/emergency/create',
+  handler: createEmergency,
+  options: {
+    payload: {
+      output: 'stream', // Atur output sebagai stream untuk menangani file
+      parse: true,      // Parsing otomatis untuk multipart
+      allow: 'multipart/form-data', // Izinkan jenis konten multipart/form-data
+      maxBytes: 1024 * 1024 * 10, // Batasi ukuran file hingga 10MB (opsional)
     },
+    pre: [verifyTokenMiddleware], // Tambahkan middleware token jika diperlukan
   },
+},
 ];
 
 module.exports = routes;

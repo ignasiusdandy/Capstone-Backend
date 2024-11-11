@@ -28,7 +28,7 @@ CREATE TABLE T_user (
     email_user VARCHAR(30),
     password_user CHAR(70),
     created_at DATE,
-    Role VARCHAR(50),
+    role VARCHAR(50),
     Pic_Profile VARCHAR(100),
     Location VARCHAR(100)
 );
@@ -71,6 +71,10 @@ CREATE TABLE T_ask (
 npm install dotenv
 npm install mysql
 npm install jsonwebtoken
+npm install @google-cloud/storage
+npm install @google-cloud/storage multer
+
+
 ```
 
 ## penginstalan localhost
