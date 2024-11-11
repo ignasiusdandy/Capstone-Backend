@@ -34,7 +34,7 @@ CREATE TABLE T_user (
 
 # -- Tabel T_article
 CREATE TABLE T_article (
-    id_article INT,
+    id_article CHAR(10) PRIMARY KEY,
     name_author VARCHAR(100),
     title VARCHAR(50),
     content VARCHAR(256),
@@ -43,7 +43,7 @@ CREATE TABLE T_article (
 
 # -- Tabel T_emergency
 CREATE TABLE T_emergency (
-    em_id INT,
+    em_id CHAR(10) PRIMARY KEY,
     pic_pet VARCHAR(100),
     pet_category VARCHAR(10),
     pet_community VARCHAR(100),
@@ -52,8 +52,8 @@ CREATE TABLE T_emergency (
 );
 
 # -- Tabel ask (untuk relasi antara T_user dan T_emergency)
-CREATE TABLE ask (
-    em_id INT,
+CREATE TABLE T_ask (
+    em_id CHAR(10),
     id_user CHAR(10),
     date_end DATE,
     pet_category VARCHAR(50),
