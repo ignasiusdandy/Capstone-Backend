@@ -45,7 +45,7 @@ CREATE TABLE T_article (
 # -- Tabel T_emergency
 CREATE TABLE T_emergency (
     em_id CHAR(10) PRIMARY KEY,
-    pic_pet VARCHAR(100),
+    pic_pet VARCHAR(256),
     pet_category VARCHAR(10),
     pet_community VARCHAR(100),
     pet_location VARCHAR(100),
@@ -66,16 +66,7 @@ CREATE TABLE T_ask (
 );
 ```
 
-## penginstalan
-```
-npm install dotenv
-npm install mysql
-npm install jsonwebtoken
-npm install @google-cloud/storage
-npm install @google-cloud/storage multer
 
-
-```
 
 ## penginstalan localhost
 ```
