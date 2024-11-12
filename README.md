@@ -70,7 +70,11 @@ CREATE TABLE T_ask (
 
 ## penginstalan localhost
 ```
+-- install database
+node api/config/migrations/createDatabase.js
 
+-- create tablee
+npx knex migrate:up
 ```
 
 ## penginstalan with docker
