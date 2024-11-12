@@ -1,32 +1,29 @@
 const { nanoid } = require('nanoid');
-const db = require('../config/db');
 const { Storage } = require('@google-cloud/storage');
-const path = require('path');
-const fs = require('fs');
-const multer = require('multer');
+const db = require('../config/db');
 
 // Inisialisasi Google Cloud Storage
-const storage = new Storage();
-const bucketName = 'dicoding-project-capstone-danz';
-
-// Konfigurasi Multer untuk menangani unggahan file ke memori
-const upload = multer({ storage: multer.memoryStorage() });
+const storage = new Storage({
+  keyFilename: '../service-439214-e8-8f183fd0d35f.json', // Ganti dengan path ke file JSON kredensial Anda
+});
+const bucketName = 'dicoding-project-capstone-danz'; // Ganti dengan nama bucket Anda
+const bucket = storage.bucket(bucketName);
 
 const createEmergency = async (request, h) => {
   console.log('terhubung ke emergency entry');
 
-  const { userId } = request.auth;
-  const { pet_category, pet_community, pet_location } = request.payload;
-  const pic_pet = request.file;
+  const { pic_pet, pet_category, pet_community, pet_location } = request.payload;
+  console.log(pic_pet, pet_category, pet_community, pet_location);
 
+  console.log('pic_pet:', request.payload.pic_pet);
+
+
+  // Validasi untuk memastikan semua data harus diisi
   if (!pic_pet || !pet_category || !pet_community || !pet_location) {
-    // Memeriksa semua data harus diisi
-    const response = h.response({
+    return h.response({
       status: 'fail',
       message: 'all data must be filled',
-    });
-    response.code(400);
-    return response;
+    }).code(400);
   }
 
   const id = nanoid(10);
@@ -34,70 +31,62 @@ const createEmergency = async (request, h) => {
   const pet_status = 'Waiting';
 
   try {
-    const [userCheck] = await db.query('SELECT role FROM T_user WHERE id_user = ?', [userId]);
-
-    if (userCheck.length === 0) {
-      // Jika userId tidak ditemukan
-      return h.response({
-        status: 'fail',
-        message: 'User tidak ditemukan atau token tidak valid',
-      }).code(401);
-    }
+    // Buat nama unik untuk file di Google Cloud Storage
+    const gcsFileName = `pets/${id}_${pic_pet.hapi.filename}`;
+    const file = bucket.file(gcsFileName);
 
     // Upload file ke Google Cloud Storage
-    const blob = storage.bucket(bucketName).file(`emergency_pictures/${id}-${pic_pet.originalname}`);
-    const blobStream = blob.createWriteStream({
-      resumable: false,
-      metadata: {
-        contentType: pic_pet.mimetype,
-      },
-    });
-
-    // Menangani event error saat unggah file
-    blobStream.on('error', (err) => {
-      console.error('Gagal mengunggah file ke Google Cloud Storage:', err);
-      return h.response({
-        status: 'fail',
-        message: 'Gagal mengunggah gambar ke cloud storage.',
-      }).code(500);
-    });
-
-    // Menangani event selesai unggah file
-    blobStream.on('finish', async () => {
-      // URL file di GCS
-      const picPetUrl = `https://storage.googleapis.com/${bucketName}/emergency_pictures/${id}-${pic_pet.originalname}`;
-
-      // Menyimpan informasi ke database setelah file berhasil diunggah
-      const [newEmergency] = await db.query(
-        'INSERT INTO T_emergency (em_id, pic_pet, pet_category, pet_community, pet_location, created_at, pet_status) VALUES (?, ?, ?, ?, ?, ?, ?)',
-        [id, picPetUrl, pet_category, pet_community, pet_location, created_at, pet_status]
-      );
-      console.log('Query berhasil, emergency terdaftar dengan ID:', id);
-
-      const response = h.response({
-        status: 'success',
-        message: 'emergency successfully added',
-        data: {
-          EmergencyId: id,
-          Category: pet_category,
-          Picture: picPetUrl,
-          Location: pet_location,
-          Filter: pet_community,
-          Status: pet_status,
-          Created_at: created_at,
+    await new Promise((resolve, reject) => {
+      const stream = file.createWriteStream({
+        metadata: {
+          contentType: pic_pet.hapi.headers['content-type'],
         },
       });
-      response.code(201);
-      return response;
+      console.log('Uploading selesai');
+
+      stream.on('error', (err) => {
+        console.error('GCS upload error:', err);
+        reject(err);
+      });
+      
+      stream.on('finish', () => {
+        console.log('File berhasil diunggah ke GCS');
+        resolve();
+      });
+    
+      stream.end(pic_pet._data);
     });
 
-    // Mulai proses unggah file
-    blobStream.end(pic_pet.buffer);
-  } catch (error) {
-    console.error('Error input database:', error);
+    // URL publik untuk file yang diunggah
+    const publicUrl = `https://storage.googleapis.com/${bucketName}/${gcsFileName}`;
+
+    // Simpan data emergency dan URL gambar ke database
+    console.log('Mulai menyimpan ke database');
+    await db.query(
+      'INSERT INTO T_emergency (em_id, pic_pet, pet_category, pet_community, pet_location, created_at, pet_status) VALUES (?, ?, ?, ?, ?, ?, ?)',
+      [id, publicUrl, pet_category, pet_community, pet_location, created_at, pet_status]
+    );
+    console.log('Selesai ke database');
+
+    console.log('Query berhasil, emergency entry ditambahkan dengan ID:', id);
     return h.response({
-      status: 'Fail',
-      message: 'Error input database',
+      status: 'success',
+      message: 'Emergency successfully added',
+      data: {
+        EmergencyId: id,
+        Category: pet_category,
+        Picture: publicUrl,
+        Location: pet_location,
+        Filter: pet_community,
+        Status: pet_status,
+        Created_at: created_at,
+      },
+    }).code(201);
+  } catch (error) {
+    console.error('Error input database or GCS upload:', error);
+    return h.response({
+      status: 'fail',
+      message: 'Error processing request',
     }).code(500);
   }
 };
