@@ -27,12 +27,13 @@ const createEmergency = async (request, h) => {
   }
 
   const id = nanoid(10);
+  const bucketFormat = nanoid(5);
   const created_at = new Date().toISOString().slice(0, 19).replace('T', ' ');
   const pet_status = 'Waiting';
 
   try {
     // Buat nama unik untuk file di Google Cloud Storage
-    const gcsFileName = `pets/${id}_${pic_pet.hapi.filename}`;
+    const gcsFileName = `pets/${id}/${bucketFormat}`;
     const file = bucket.file(gcsFileName);
 
     // Upload file ke Google Cloud Storage
