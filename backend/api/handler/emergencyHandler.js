@@ -4,9 +4,9 @@ const db = require('../config/db');
 
 // Inisialisasi Google Cloud Storage
 const storage = new Storage({
-  keyFilename: '../service-439214-e8-8f183fd0d35f.json', // Ganti dengan path ke file JSON kredensial Anda
+  keyFilename: './service-439214-e8-8f183fd0d35f.json', 
 });
-const bucketName = 'dicoding-project-capstone-danz'; // Ganti dengan nama bucket Anda
+const bucketName = 'dicoding-project-capstone-danz'; 
 const bucket = storage.bucket(bucketName);
 
 const createEmergency = async (request, h) => {
@@ -33,7 +33,7 @@ const createEmergency = async (request, h) => {
 
   try {
     // Buat nama unik untuk file di Google Cloud Storage
-    const gcsFileName = `pets/${id}/${bucketFormat}`;
+    const gcsFileName = `pets/${id}`;
     const file = bucket.file(gcsFileName);
 
     // Upload file ke Google Cloud Storage

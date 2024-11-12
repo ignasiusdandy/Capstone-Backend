@@ -6,7 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint ./",
-    "start": "node ./api/server.js"
+    "start": "node ./api/server.js",
+     "migrate:latest": "knex migrate:latest || echo 'Migrasi gagal, cek koneksi atau konfigurasi database.'",
+  "migrate:rollback": "knex migrate:rollback || echo 'Rollback gagal, cek koneksi atau konfigurasi database.'"
   },
   "author": "Ignasius Dandy",
   "license": "ISC",
@@ -22,6 +24,7 @@
     "bcrypt": "^5.1.1",
     "dotenv": "^16.4.5",
     "jsonwebtoken": "^9.0.2",
+    "knex": "^3.1.0",
     "multer": "^1.4.5-lts.1",
     "mysql2": "^3.11.4",
     "nanoid": "^3.3.7"
