@@ -6,7 +6,7 @@
 module.exports = {
 
   development: {
-    client: 'mysql2',
+    client: 'mysql_db',
     connection: {
       host: process.env.DB_HOST,
       user: process.env.DB_USER,
