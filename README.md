@@ -65,6 +65,24 @@ CREATE TABLE T_ask (
     FOREIGN KEY (id_user) REFERENCES T_user(id_user) ON DELETE CASCADE
 );
 ```
+## Create Bucket
+Create a bucket with the name bucket-petpoint-capstone <br>
+```
+gsutil mb -l asia-southeast2 gs://bucket-petpoint-capstone
+```
+Make the bucket public access
+```
+gsutil acl ch -u AllUsers:R gs://bucket-petpoint-capstone
+```
+Go to service account <br>
+Klik Create Service Account <br>
+For service account name input "petpoint-data-admin" and klik create&continue <br>
+For Grant this service account access to project select a role to storage admin <br>
+Klik done <br>
+Klik the service and klik menu keys <br>
+Klik "ADD KEY" and klik "Create new key" <br>
+Choose key type to JSON and klik create <br>
+Save the file credentials and you can use to backend later
 
 
 
@@ -96,9 +114,12 @@ docker exec -it mysql_db mysql -u root -p'dandy' -h 127.0.0.1
 
 -- masuk ke node
 docker exec -it node_app /bin/sh
+apt-get update && apt-get install -y nano
+
 
 -- periksa apakah berjalan
 docker logs node_app
+
 
 
 
@@ -116,6 +137,7 @@ sql = 3000
 lakukan git clone dan masuk ke folder backend
 ```
 git clone https://github.com/ignasiusdandy/Capstone-Backend.git
+cd Capstone-Backend
 cd backend
 ``` 
 pastikan port sql anda 3307 atau jika ingin ganti port silahkan ganti di .env <br>
@@ -124,6 +146,12 @@ lakukan pembuatan database seperti langkah diatas! <br>
 lakukan penginstalan npm dengan versi v18.13.0 <br>
 ```
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | bash
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  
+
+
 nvm install 18.13.0
 ```
 jalankan npmnya menggunakan
