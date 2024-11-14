@@ -8,11 +8,11 @@ module.exports = {
   development: {
     client: 'mysql2',
     connection: {
-      host: '${DB_HOST}',
-      user: '${DB_USER}',
-      password: '${DB_PASSWORD}',
-      port: '${DB_PORT}',
-      database: 'db-petpoint2'
+      host: process.env.DB_HOST,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      port: process.env.PORT,
+      database: process.env.DB_NAME
     },
     migrations: {
       directory: __dirname + '/api/config/migrations'
