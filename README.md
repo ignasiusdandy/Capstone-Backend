@@ -66,23 +66,23 @@ CREATE TABLE T_ask (
 );
 ```
 ## Create Bucket
-Create a bucket with the name bucket-petpoint-capstone <br>
+1. Create a bucket with the name bucket-petpoint-capstone <br>
 ```
 gsutil mb -l asia-southeast2 gs://bucket-petpoint-capstone
 ```
-Make the bucket public access
+2. Make the bucket public access
 ```
 gsutil acl ch -u AllUsers:R gs://bucket-petpoint-capstone
 ```
-Go to service account <br>
-Klik Create Service Account <br>
-For service account name input "petpoint-data-admin" and klik create&continue <br>
-For Grant this service account access to project select a role to storage admin <br>
-Klik done <br>
-Klik the service and klik menu keys <br>
-Klik "ADD KEY" and klik "Create new key" <br>
-Choose key type to JSON and klik create <br>
-Save the file credentials and you can use to backend later
+3. Go to service account <br>
+4. Klik Create Service Account <br>
+5. For service account name input "petpoint-data-admin" and klik create&continue <br>
+6. For Grant this service account access to project select a role to storage admin <br>
+7. Klik done <br>
+8. Klik the service and klik menu keys <br>
+9. Klik "ADD KEY" and klik "Create new key" <br>
+10. Choose key type to JSON and klik create <br>
+11. Save the file credentials and you can use to backend later
 
 
 
