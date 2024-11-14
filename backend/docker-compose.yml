@@ -1,3 +1,5 @@
+# docker-compose --version
+# Samakan versi nya!
 version: '3.3'
 
 services:
@@ -25,7 +27,7 @@ services:
     env_file:
       - .env
     ports:
-      - "3000:3000"
+      - "3000:3306"
     volumes:
       - mysql_data:/var/lib/mysql
     environment:
