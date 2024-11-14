@@ -82,6 +82,8 @@ npx knex migrate:up
 -- menginstall docker
 sudo apt update
 sudo apt install docker-compose -y
+sudo systemctl start docker
+sudo chmod 666 /var/run/docker.sock
 docker-compose --version
 docker-compose up -d
 
@@ -90,6 +92,15 @@ docker ps
 
 -- masuk ke mysql
 docker exec -it <container_id_or_name> mysql -u root -p
+docker exec -it mysql_db mysql -u root -p'dandy' -h 127.0.0.1
+
+-- masuk ke node
+docker exec -it node_app /bin/sh
+
+-- periksa apakah berjalan
+docker logs node_app
+
+
 
 -- mematikkan docker
 docker-compose down
@@ -112,6 +123,7 @@ Buat database dengan nama = **db-petpoint** <br>
 lakukan pembuatan database seperti langkah diatas! <br>
 lakukan penginstalan npm dengan versi v18.13.0 <br>
 ```
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | bash
 nvm install 18.13.0
 ```
 jalankan npmnya menggunakan
