@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint ./",
-    "start": "NODE_ENV=production node ./api/server.js",
+    "start-prod": "NODE_ENV=production node ./api/server.js",
      "migrate:latest": "knex migrate:latest || echo 'Migrasi gagal, cek koneksi atau konfigurasi database.'",
   "migrate:rollback": "knex migrate:rollback || echo 'Rollback gagal, cek koneksi atau konfigurasi database.'"
   },
