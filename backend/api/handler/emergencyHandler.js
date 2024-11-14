@@ -4,8 +4,8 @@ const db = require('../config/db');
 
 // Inisialisasi Google Cloud Storage
 const storage = new Storage({
-  keyFilename: './service-439214-e8-8f183fd0d35f.json', 
-  // keyFilename: './capstone-cred.json', 
+  // keyFilename: './service-439214-e8-8f183fd0d35f.json', 
+  keyFilename: './capstone-cred.json', 
 });
 const bucketName = 'dicoding-project-capstone-danz'; 
 const bucket = storage.bucket(bucketName);

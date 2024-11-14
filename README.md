@@ -112,6 +112,7 @@ export NVM_DIR="$HOME/.nvm"
 6. Install nvm to 18.13.0 version
 ```
 nvm install v18.13.0
+nvm install
 ```
 7. Update instance
 ```
@@ -129,6 +130,7 @@ docker-compose --version
 ```
 10. Running the docker
 ```
+docker-compose build
 docker-compose up -d
 ```
 11. Check the running program docker
