@@ -2,6 +2,7 @@
 - [Desain ERD](#desain-erd-database)
 - [Format Database](#create-database)
 - [developer localhost](#developer)
+- [Create Bucket](#create-bucket)
 
 ## Desain ERD database
 ![alt text](https://github.com/ignasiusdandy/Capstone-Backend/blob/master/src/petshop.png?raw=true)
