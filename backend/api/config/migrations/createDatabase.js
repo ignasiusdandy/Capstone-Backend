@@ -5,7 +5,7 @@ const knex = require('knex')({
     host: 'mysql_db', 
     user: 'root',       
     password: 'dandy', 
-    port: 3307,
+    // port: 3307,
   }, 
 });
 
