@@ -16,6 +16,10 @@
 | /logout                | POST        | Logout account              | Required     |
 | /emergency/create      | POST        | Create a new emergency      | Required     |
 
+## Tech Architecture
+
+## Dependencies
+
 ## Create Database
 ```
 CREATE DATABASE petpoint;
@@ -84,6 +88,73 @@ gsutil acl ch -u AllUsers:R gs://bucket-petpoint-capstone
 9. Klik "ADD KEY" and klik "Create new key" <br>
 10. Choose key type to JSON and klik create <br>
 11. Save the file credentials and you can use to backend later
+
+## Installation
+1. Clone the repository project
+```
+git clone -b master https://github.com/ignasiusdandy/Capstone-Backend 
+```
+3. Go to backend directory 
+```
+cd Capstone-Backend/backend
+```
+4. Install nvm source
+```
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | bash
+```
+5. Export nvm
+```
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  
+```
+6. Install nvm to 18.13.0 version
+```
+nvm install v18.13.0
+```
+7. Update instance
+```
+sudo apt update
+```
+8.  Install docker
+```
+sudo apt install docker-compose -y
+sudo systemctl start docker
+sudo chmod 666 /var/run/docker.sock
+```
+9. Cek docker version (opsional)
+```
+docker-compose --version
+```
+10. Running the docker
+```
+docker-compose up -d
+```
+11. Check the running program docker
+```
+docker ps
+```
+12. Enter to node in docker system
+```
+docker exec -it node_app /bin/sh
+```
+13. Install nano (opsional)
+```
+apt-get update && apt-get install -y nano
+```
+14. Create database
+```
+node api/config/migrations/createDatabase.js
+```
+15. Create table database
+```
+npx knex migrate:up
+```
+16. Exit docker system
+```
+exit
+```
+
 
 
 
