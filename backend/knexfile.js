@@ -8,10 +8,10 @@ module.exports = {
   development: {
     client: 'mysql2',
     connection: {
-      host: 'localhost',
-      user: 'root',
-      password: 'dandy',
-      port: 3307,
+      host: '${DB_HOST}',
+      user: '${DB_USER}',
+      password: '${DB_PASSWORD}',
+      port: '${DB_PORT}',
       database: 'db-petpoint2'
     },
     migrations: {
