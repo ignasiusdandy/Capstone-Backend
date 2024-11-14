@@ -78,6 +78,7 @@ gsutil mb -l asia-southeast2 gs://bucket-petpoint-capstone
 2. Make the bucket public access
 ```
 gsutil acl ch -u AllUsers:R gs://bucket-petpoint-capstone
+gsutil iam ch allUsers:objectViewer gs://bucket-petpoint-capstone
 ```
 3. Go to service account <br>
 4. Klik Create Service Account <br>
@@ -144,7 +145,7 @@ apt-get update && apt-get install -y nano
 ```
 14. Create database
 ```
-node api/config/migrations/createDatabase.js
+node api/config/createDatabase.js
 ```
 15. Create table database
 ```
@@ -230,3 +231,5 @@ jalankan npmnya menggunakan
 ```
 npm run start
 ```
+upload file json ke vm langsung
+gcloud compute scp capstone-cred.json server-petpoint:~/Capstone-Backend/backend --zone=asia-southeast2-a
