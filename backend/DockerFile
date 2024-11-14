@@ -1,4 +1,4 @@
-# Gunakan image Node.js
+# Gunakan image Node.jss
 FROM node:18
 
 # Set working directory
