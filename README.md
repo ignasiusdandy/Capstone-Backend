@@ -75,20 +75,19 @@ CREATE TABLE T_ask (
 ```
 gsutil mb -l asia-southeast2 gs://bucket-petpoint-capstone
 ```
-2. Make the bucket public access
-```
-gsutil acl ch -u AllUsers:R gs://bucket-petpoint-capstone
-gsutil iam ch allUsers:objectViewer gs://bucket-petpoint-capstone
-```
-3. Go to service account <br>
-4. Klik Create Service Account <br>
-5. For service account name input "petpoint-data-admin" and klik create&continue <br>
-6. For Grant this service account access to project select a role to storage admin <br>
-7. Klik done <br>
-8. Klik the service and klik menu keys <br>
-9. Klik "ADD KEY" and klik "Create new key" <br>
-10. Choose key type to JSON and klik create <br>
-11. Save the file credentials and you can use to backend later
+2. Go to service account <br>
+3. Klik Create Service Account <br>
+4. For service account name input "petpoint-data-admin" and klik create&continue <br>
+5. For Grant this service account access to project select a role to storage object admin <br>
+6. Klik done <br>
+7. Klik the service and klik menu keys <br>
+8. Klik "ADD KEY" and klik "Create new key" <br>
+9. Choose key type to JSON and klik create <br>
+10. Save the file credentials and you can use to backend later
+11. Go to bucket > permissions
+12. Klik grand access 
+13. For new principal input the service account
+14. For role select "storage object admin"
 
 ## Installation
 1. Clone the repository project
@@ -112,7 +111,7 @@ export NVM_DIR="$HOME/.nvm"
 6. Install nvm to 18.13.0 version
 ```
 nvm install v18.13.0
-nvm install
+npm install
 ```
 7. Update instance
 ```
@@ -200,6 +199,7 @@ docker logs node_app
 
 -- mematikkan docker
 docker-compose down
+docker system prune -a --volumes -f
 docker-compose build --no-cache
 docker-compose up -d
 ```
@@ -235,3 +235,39 @@ npm run start
 ```
 upload file json ke vm langsung
 gcloud compute scp capstone-cred.json server-petpoint:~/Capstone-Backend/backend --zone=asia-southeast2-a
+
+
+gcloud storage buckets add-iam-policy-binding gs://dicoding-project-capstone-danz \
+  --member="serviceAccount:storage-admin@capstone-petpoint.iam.gserviceaccount.com" \
+  --role="roles/storage.objectAdmin"
+
+
+
+## Create firewall
+1. Go to VPC NETWORK > firewall <br>
+2. Klik "create firewall rule" <br>
+3. Name the firewall to "server-petpoint" <br>
+4. Filling target tags to "server-petpoint" <br>
+5. source filter ipv4
+6. Source ip4 range to "0.0.0.0/0" <br>
+7. For protocols and ports centang CTP and fill port to "3000,4000,5000" <br>
+8. Klik create
+
+## iam 
+Compute Instance Admin 
+1. Go to iam & admin > iam <br>
+2. Klik Grant Access <br>
+3. For new principals enter email user <br>
+4. Select a role to
+5. Klik save
+
+# Create instance
+1. Go to Compute Engine > Vm Instance <br>
+2. Klik "Create Instance" <br>
+3. Name the instance "petpoint-instance" <br>
+4. For region select "asia-southeast2" <br>
+5. For zone select "asia-southeast2-a" <br>
+6. Select machine type to E2-medium <br>
+7. For boot disk select to ubuntu and size to 50 GB <br>
+8. For network tags enter "server-petpoint" <br>
+9. Klik create
