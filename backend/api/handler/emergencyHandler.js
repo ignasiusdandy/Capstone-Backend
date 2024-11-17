@@ -95,4 +95,39 @@ const createEmergency = async (request, h) => {
   }
 };
 
-module.exports = { createEmergency };
+const dataEmergencyWaiting = async (request, h) => {
+  console.log('Get data status Waiting');
+
+  try {
+    // Ambil data dari database
+    const [rows] = await db.query(
+      'SELECT em_id, id_user, pic_pet, pet_category, pet_community, pet_location, created_at, pet_status FROM T_emergency WHERE pet_status = ?',
+      ['Waiting']
+    );
+
+    // Jika tidak ada data yang ditemukan
+    if (rows.length === 0) {
+      return h.response({
+        status: 'success',
+        message: 'No emergency entries with status Waiting found.',
+        data: [],
+      }).code(200);
+    }
+
+    // Jika data ditemukan
+    return h.response({
+      status: 'success',
+      message: 'Emergency entries with status Waiting retrieved successfully.',
+      data: rows,
+    }).code(200);
+  } catch (error) {
+    console.error('Error fetching emergency data:', error);
+    return h.response({
+      status: 'fail',
+      message: 'Error fetching emergency data.',
+    }).code(500);
+  }
+};
+
+
+module.exports = { createEmergency, dataEmergencyWaiting };
