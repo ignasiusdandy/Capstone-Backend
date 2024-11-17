@@ -67,7 +67,7 @@ const createEmergency = async (request, h) => {
     // Simpan data emergency dan URL gambar ke database
     console.log('Mulai menyimpan ke database');
     await db.query(
-      'INSERT INTO T_emergency (em_id, user_id, pic_pet, pet_category, pet_community, pet_location, created_at, pet_status) VALUES (?, ?,?, ?, ?, ?, ?, ?)',
+      'INSERT INTO T_emergency (em_id, id_user, pic_pet, pet_category, pet_community, pet_location, created_at, pet_status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
       [id, userId, publicUrl, pet_category, pet_community, pet_location, created_at, pet_status]
     );
     console.log('Selesai ke database');
