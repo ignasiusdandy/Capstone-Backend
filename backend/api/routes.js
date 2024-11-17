@@ -1,5 +1,5 @@
 const { registerHandler, loginHandler, logoutHandler } = require('./handler/authHandler');
-const { createEmergency } = require('./handler/emergencyHandler');
+const { createEmergency, dataEmergencyWaiting } = require('./handler/emergencyHandler');
 const verifyTokenMiddleware = require('./middleware/verifyTokenMiddleware');
 
 const routes = [
@@ -31,6 +31,14 @@ const routes = [
       },
       handler: createEmergency,
       pre: [{ method: verifyTokenMiddleware }], 
+    },
+  },
+  {
+    method: 'GET',
+    path: '/emergency/waitingList',
+    handler: dataEmergencyWaiting,
+    options: {
+      pre: [verifyTokenMiddleware],
     },
   },
 ];
