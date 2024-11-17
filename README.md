@@ -74,6 +74,8 @@ CREATE TABLE T_ask (
 1. Create a bucket with the name bucket-petpoint-capstone <br>
 ```
 gsutil mb -l asia-southeast2 gs://bucket-petpoint-capstone
+gsutil acl ch -u AllUsers:R gs://bucket-petpoint-capstone
+gsutil iam ch allUsers:objectViewer gs://bucket-petpoint-capstone
 ```
 2. Go to service account <br>
 3. Klik Create Service Account <br>
@@ -193,7 +195,7 @@ apt-get update && apt-get install -y nano
 
 -- periksa apakah berjalan
 docker logs node_app
-
+docker logs -f node_app
 
 
 
@@ -269,5 +271,46 @@ Compute Instance Admin
 5. For zone select "asia-southeast2-a" <br>
 6. Select machine type to E2-medium <br>
 7. For boot disk select to ubuntu and size to 50 GB <br>
-8. For network tags enter "server-petpoint" <br>
-9. Klik create
+8. correct the checkbox to allow http traffic <br>
+9. For network tags enter "server-petpoint" <br>
+
+10. Klik create
+
+## Create VPC
+1. Go to Vpc Network
+2. Enter name to "vpc-capstone" <br>
+3. For subnet name enter "subnet-capstone" <br>
+4. For region select to "asia-southeast2" <br>
+5. For ipv4 range enter "10.176.0.0/20" <br>
+6. Klik done <br>
+7. For firewall rule correct all checkbox <br>
+8. Klik Create
+
+## iam
+Batas on off saja
+```
+gcloud iam roles create startStopVMRole --project project-capstone-441902 \
+    --title="Start Stop VM Role" \
+    --permissions="compute.instances.start,compute.instances.stop,compute.instances.get" \
+    --stage="GA"
+```
+Tetapkan ke pengguna
+```
+gcloud projects add-iam-policy-binding project-capstone-441902 \
+    --member="user:a@example" \
+    --role="projects/project-capstone-441902/roles/startStopVMRole"
+```
+
+Hanya ssh saja
+```
+gcloud iam roles create sshAccessRole --project project-capstone-441902 \
+    --title="SSH Access Role" \
+    --permissions="compute.instances.get,compute.instances.list,compute.instances.osLogin,compute.projects.get" \
+    --stage="GA"
+```
+Ke pengguna
+```
+gcloud projects add-iam-policy-binding project-capstone-441902 \
+    --member="user:m704b4ky0875@bangkit.academy" \
+    --role="projects/project-capstone-441902/roles/sshAccessRole"
+```

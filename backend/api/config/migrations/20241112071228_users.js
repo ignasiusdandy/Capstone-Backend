@@ -19,12 +19,15 @@ exports.up = function(knex) {
     })
     .createTable('T_emergency', function(table) {
       table.string('em_id', 10).primary();
+      table.string('id_user', 10);
       table.string('pic_pet', 256);
       table.string('pet_category', 10);
       table.string('pet_community', 100);
       table.string('pet_location', 100);
       table.date('created_at');
       table.string('pet_status', 10);
+      table.primary('id_user');
+      table.foreign('id_user').references('T_user.id_user').onDelete('CASCADE');
     })
     .createTable('T_ask', function(table) {
       table.string('em_id', 10);
