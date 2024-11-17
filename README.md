@@ -15,6 +15,7 @@
 | /register              | POST        | Register a new user         | Not Required |
 | /logout                | POST        | Logout account              | Required     |
 | /emergency/create      | POST        | Create a new emergency      | Required     |
+| /emergency/waitingList | GET         | List emergency "waiting"    | Required     |
 
 ## Tech Architecture
 
@@ -206,6 +207,11 @@ docker-compose down
 docker system prune -a --volumes -f
 docker-compose build --no-cache
 docker-compose up -d
+
+-- menghapus perubahan dan pull
+git reset --hard HEAD
+git pull origin master
+
 ```
 
 # port
