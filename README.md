@@ -50,12 +50,14 @@ CREATE TABLE T_article (
 # -- Tabel T_emergency
 CREATE TABLE T_emergency (
     em_id CHAR(10) PRIMARY KEY,
+    id_user CHAR(10),
     pic_pet VARCHAR(256),
     pet_category VARCHAR(10),
     pet_community VARCHAR(100),
     pet_location VARCHAR(100),
     created_at DATE,
-    pet_status VARCHAR(10)
+    pet_status VARCHAR(10),
+    FOREIGN KEY (id_user) REFERENCES T_user(id_user) ON DELETE CASCADE
 );
 
 # -- Tabel ask (untuk relasi antara T_user dan T_emergency)
