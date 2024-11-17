@@ -78,6 +78,7 @@ const createEmergency = async (request, h) => {
       message: 'Emergency successfully added',
       data: {
         EmergencyId: id,
+        idUser: userId,
         Category: pet_category,
         Picture: publicUrl,
         Location: pet_location,
