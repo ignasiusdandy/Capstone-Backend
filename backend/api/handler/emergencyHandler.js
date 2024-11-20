@@ -103,7 +103,7 @@ const dataEmergencyWaiting = async (request, h) => {
   try {
     // Ambil data dari database
     const [rows] = await db.query(
-      'SELECT em_id, id_user, pic_pet, pet_category, pet_community, pet_location, created_at, pet_status FROM T_emergency WHERE pet_status = ?',
+      'SELECT em_id, id_user, pic_pet, pet_category, pet_community, pet_location, created_at, pet_status, notes FROM T_emergency WHERE pet_status = ?',
       ['Waiting']
     );
 
