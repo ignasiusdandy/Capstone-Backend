@@ -85,6 +85,7 @@ const createEmergency = async (request, h) => {
         Filter: pet_community,
         Status: pet_status,
         Created_at: created_at,
+        notes: notes,
       },
     }).code(201);
   } catch (error) {
