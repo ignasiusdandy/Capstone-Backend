@@ -26,6 +26,7 @@ exports.up = function(knex) {
       table.string('pet_location', 100);
       table.date('created_at');
       table.string('pet_status', 10);
+      table.string('notes', 256);
       table.primary('id_user');
       table.foreign('id_user').references('T_user.id_user').onDelete('CASCADE');
     })
