@@ -13,7 +13,7 @@ const bucket = storage.bucket(bucketName);
 const createEmergency = async (request, h) => {
   console.log('terhubung ke emergency entry');
 
-  const { pic_pet, pet_category, pet_community, pet_location } = request.payload;
+  const { pic_pet, pet_category, pet_community, pet_location, notes } = request.payload;
   const { userId } = request.auth;
   console.log(userId);
   console.log(pic_pet, pet_category, pet_community, pet_location);
@@ -67,8 +67,8 @@ const createEmergency = async (request, h) => {
     // Simpan data emergency dan URL gambar ke database
     console.log('Mulai menyimpan ke database');
     await db.query(
-      'INSERT INTO T_emergency (em_id, id_user, pic_pet, pet_category, pet_community, pet_location, created_at, pet_status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-      [id, userId, publicUrl, pet_category, pet_community, pet_location, created_at, pet_status]
+      'INSERT INTO T_emergency (em_id, id_user, pic_pet, pet_category, pet_community, pet_location, created_at, pet_status, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      [id, userId, publicUrl, pet_category, pet_community, pet_location, created_at, pet_status, notes]
     );
     console.log('Selesai ke database');
 
