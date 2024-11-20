@@ -22,7 +22,7 @@ const createEmergency = async (request, h) => {
 
 
   // Validasi untuk memastikan semua data harus diisi
-  if (!pic_pet || !pet_category || !pet_community || !pet_location) {
+  if (!pic_pet || !pet_category || !pet_location) {
     return h.response({
       status: 'fail',
       message: 'all data must be filled',
