@@ -1,0 +1,13 @@
+const latitude = -9.9213;
+const longitude = 92.91;
+
+fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`)
+  .then(response => response.json())
+  .then(data => {
+      if (data.address) {
+          console.log("Nama Jalan:", data.display_name);
+      } else {
+          console.error("Tidak ditemukan alamat untuk koordinat tersebut.");
+      }
+  })
+  .catch(error => console.error("Error:", error));
