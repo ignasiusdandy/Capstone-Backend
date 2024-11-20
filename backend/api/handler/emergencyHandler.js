@@ -103,9 +103,10 @@ const dataEmergencyWaiting = async (request, h) => {
   try {
     // Ambil data dari database
     const [rows] = await db.query(
-      'SELECT em_id, id_user, pic_pet, pet_category, pet_community,  SUBSTRING_INDEX(pet_location, ',', 1) AS latitude,SUBSTRING_INDEX(pet_location, ',', -1) AS longitude, created_at, pet_status, notes FROM T_emergency WHERE pet_status = ?',
+      'SELECT em_id, id_user, pic_pet, pet_category, pet_community, SUBSTRING_INDEX(pet_location, ',', 1) AS latitude,SUBSTRING_INDEX(pet_location, ',', -1) AS longitude, created_at, pet_status, notes FROM T_emergency WHERE pet_status = ?',
       ['Waiting']
     );
+    console.log(latitude, longitude);
 
     // Jika tidak ada data yang ditemukan
     if (rows.length === 0) {
