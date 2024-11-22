@@ -96,6 +96,7 @@ const createEmergency = async (request, h) => {
   }
 };
 
+
 const dataEmergencyWaiting = async (request, h) => {
   console.log('Get data status Waiting');
 
