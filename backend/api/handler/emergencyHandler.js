@@ -191,8 +191,8 @@ const getEmergenciesWithinRadius = async (request, h) => {
        POINT(SUBSTRING_INDEX(pet_location, ',', 1), SUBSTRING_INDEX(pet_location, ',', -1)), 
        POINT(?, ?)
      ) <= 100`,
-    [lat, lng] // Urutan parameter sesuai dengan urutan dalam query POINT()
-  );
+     [lng, lat] // Urutan parameter sesuai dengan urutan dalam query POINT()
+    );
 
     if (emergencies.length === 0) {
       return h.response({
