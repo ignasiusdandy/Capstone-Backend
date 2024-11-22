@@ -1,13 +1,46 @@
-const latitude = -9.9213;
-const longitude = 92.91;
-
-fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`)
-  .then(response => response.json())
-  .then(data => {
-      if (data.address) {
-          console.log("Nama Jalan:", data.display_name);
-      } else {
-          console.error("Tidak ditemukan alamat untuk koordinat tersebut.");
+const getEmergenciesWithinRadius = async (request, h) => {
+    console.log('Terhubung untuk mengambil data emergency dalam radius 100 meter');
+  
+    // Mendapatkan koordinat lokasi pengguna dari request
+    const { userLocation } = request.query; // asumsikan format { lat, lng }
+  
+    // Validasi untuk memastikan lokasi pengguna tersedia
+    if (!userLocation || !userLocation.lat || !userLocation.lng) {
+      return h.response({
+        status: 'fail',
+        message: 'Lokasi pengguna harus disertakan dengan benar',
+      }).code(400);
+    }
+  
+    try {
+      // Query untuk mengambil semua data emergency dalam radius 100 meter dari lokasi pengguna
+      const [emergencies] = await db.query(
+        `SELECT * FROM T_emergency 
+        WHERE ST_Distance_Sphere(POINT(lng, lat), POINT(?, ?)) <= 100`,
+        [userLocation.lng, userLocation.lat]
+      );
+  
+      if (emergencies.length === 0) {
+        return h.response({
+          status: 'success',
+          message: 'Tidak ada data emergency dalam radius 100 meter.',
+          data: [],
+        }).code(200);
       }
-  })
-  .catch(error => console.error("Error:", error));
+  
+      console.log('Data emergency dalam radius 100 meter ditemukan:', emergencies);
+  
+      return h.response({
+        status: 'success',
+        message: 'Data emergency berhasil diambil',
+        data: emergencies,
+      }).code(200);
+    } catch (error) {
+      console.error('Error dalam mengambil data emergency:', error);
+      return h.response({
+        status: 'fail',
+        message: 'Terjadi kesalahan dalam memproses permintaan',
+      }).code(500);
+    }
+  };
+  
