@@ -146,7 +146,7 @@ const dataEmergencyWaiting = async (request, h) => {
 };
 
 const getEmergenciesWithinRadius = async (request, h) => {
-  console.log('Terhubung untuk mengambil data emergency dalam radius 100 meter');
+  console.log('Terhubung untuk mengambil data emergency dalam radius 1000 meter');
 
   // Mendapatkan koordinat lokasi pengguna dari request
   const { userLocation } = request.query; // asumsikan format { lat, lng }
@@ -190,19 +190,19 @@ const getEmergenciesWithinRadius = async (request, h) => {
    WHERE ST_Distance_Sphere(
      POINT(SUBSTRING_INDEX(pet_location, ',', -1), SUBSTRING_INDEX(pet_location, ',', 1)), 
      POINT(?, ?)
-   ) <= 100`,
+   ) <= 1000`,
   [lng, lat] // Urutan parameter sesuai dengan urutan dalam query POINT()
 );
 
     if (emergencies.length === 0) {
       return h.response({
         status: 'success',
-        message: 'Tidak ada data emergency dalam radius 100 meter.',
+        message: 'Tidak ada data emergency dalam radius 1000 meter.',
         data: [],
       }).code(200);
     }
 
-    console.log('Data emergency dalam radius 100 meter ditemukan:', emergencies);
+    console.log('Data emergency dalam radius 1000 meter ditemukan:', emergencies);
 
     return h.response({
       status: 'success',
