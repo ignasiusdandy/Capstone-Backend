@@ -152,7 +152,7 @@ const getEmergenciesWithinRadius = async (request, h) => {
   const { userLocation } = request.query; // asumsikan format { lat, lng }
 
   // Validasi untuk memastikan lokasi pengguna tersedia
-  console.log('userLocation, userLocation.lat, userLocation.lng');
+  console.log(userLocation, userLocation.lat, userLocation.lng);
   if (!userLocation || !userLocation.lat || !userLocation.lng) {
     return h.response({
       status: 'fail',
