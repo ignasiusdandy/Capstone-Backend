@@ -181,8 +181,6 @@ const getEmergenciesWithinRadius = async (request, h) => {
     }).code(400);
   }
 
-  console.log('Latitude:', lat);
-  console.log('Longitude:', lng);
 
   try {
  // Query untuk mengambil semua data emergency dalam radius 100 meter dari lokasi pengguna
@@ -194,6 +192,17 @@ const getEmergenciesWithinRadius = async (request, h) => {
    ) <= 1000`,
   [lng, lat] // Urutan parameter sesuai dengan urutan dalam query POINT()
 );
+
+fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`)
+.then(response => response.json())
+.then(data => {
+    if (data.address) {
+        console.log("Nama Jalan:", data.display_name);
+    } else {
+        console.error("Tidak ditemukan alamat untuk koordinat tersebut.");
+    }
+})
+.catch(error => console.error("Error:", error));
 
     if (emergencies.length === 0) {
       return h.response({
