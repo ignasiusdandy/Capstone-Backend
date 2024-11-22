@@ -13,10 +13,10 @@ const bucket = storage.bucket(bucketName);
 const createEmergency = async (request, h) => {
   console.log('terhubung ke emergency entry');
 
-  const { pic_pet, pet_category, pet_community, pet_location, notes } = request.payload;
+  const { pic_pet, pet_category, pet_location, notes } = request.payload;
   const { userId } = request.auth;
   console.log(userId);
-  console.log(pic_pet, pet_category, pet_community, pet_location);
+  console.log(pic_pet, pet_category, pet_location);
 
   console.log('pic_pet:', request.payload.pic_pet);
 
