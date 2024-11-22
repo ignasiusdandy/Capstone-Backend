@@ -41,6 +41,14 @@ const routes = [
       pre: [verifyTokenMiddleware],
     },
   },
+  {
+    method: 'GET',
+    path: '/community/emergency/dataList',
+    handler: getEmergenciesWithinRadius,
+    options: {
+      pre: [verifyTokenMiddleware],
+    },
+  },
 ];
 
 module.exports = routes;
