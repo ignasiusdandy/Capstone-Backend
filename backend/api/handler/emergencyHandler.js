@@ -146,87 +146,87 @@ const dataEmergencyWaiting = async (request, h) => {
   }
 };
 
-const getEmergenciesWithinRadius = async (request, h) => {
-  console.log('Terhubung untuk mengambil data emergency dalam radius 1000 meter');
+  const getEmergenciesWithinRadius = async (request, h) => {
+    console.log('Terhubung untuk mengambil data emergency dalam radius 1000 meter');
 
-  // Mendapatkan koordinat lokasi pengguna dari request
-  const { userLocation } = request.query; // asumsikan format { lat, lng }
+    // Mendapatkan koordinat lokasi pengguna dari request
+    const { userLocation } = request.query; // asumsikan format { lat, lng }
 
-  // Validasi untuk memastikan lokasi pengguna tersedia
-  console.log(userLocation);
-  if (!userLocation) {
-    return h.response({
-      status: 'fail',
-      message: 'Lokasi pengguna harus disertakan dengan benar',
-    }).code(400);
-  }
-
-  // Parsing JSON string yang diterima dari query parameter
-  let location;
-  try {
-    location = JSON.parse(userLocation);
-  } catch (error) {
-    return h.response({
-      status: 'fail',
-      message: 'Format lokasi tidak valid. Pastikan formatnya adalah JSON',
-    }).code(400);
-  }
-
-  // Validasi apakah lat dan lng ada dalam objek lokasi
-  const { lat, lng } = location;
-  if (typeof lat === 'undefined' || typeof lng === 'undefined') {
-    return h.response({
-      status: 'fail',
-      message: 'Lokasi pengguna harus memiliki latitude dan longitude',
-    }).code(400);
-  }
-
-
-  try {
- // Query untuk mengambil semua data emergency dalam radius 100 meter dari lokasi pengguna
- const [emergencies] = await db.query(
-  `SELECT * FROM T_emergency 
-   WHERE ST_Distance_Sphere(
-     POINT(SUBSTRING_INDEX(pet_location, ',', -1), SUBSTRING_INDEX(pet_location, ',', 1)), 
-     POINT(?, ?)
-   ) <= 1000`,
-  [lng, lat] // Urutan parameter sesuai dengan urutan dalam query POINT()
-);
-
-fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`)
-.then(response => response.json())
-.then(data => {
-    if (data.address) {
-        console.log("Nama Jalan:", data.display_name);
-    } else {
-        console.error("Tidak ditemukan alamat untuk koordinat tersebut.");
+    // Validasi untuk memastikan lokasi pengguna tersedia
+    console.log(userLocation);
+    if (!userLocation) {
+      return h.response({
+        status: 'fail',
+        message: 'Lokasi pengguna harus disertakan dengan benar',
+      }).code(400);
     }
-})
-.catch(error => console.error("Error:", error));
 
-    if (emergencies.length === 0) {
+    // Parsing JSON string yang diterima dari query parameter
+    let location;
+    try {
+      location = JSON.parse(userLocation);
+    } catch (error) {
+      return h.response({
+        status: 'fail',
+        message: 'Format lokasi tidak valid. Pastikan formatnya adalah JSON',
+      }).code(400);
+    }
+
+    // Validasi apakah lat dan lng ada dalam objek lokasi
+    const { lat, lng } = location;
+    if (typeof lat === 'undefined' || typeof lng === 'undefined') {
+      return h.response({
+        status: 'fail',
+        message: 'Lokasi pengguna harus memiliki latitude dan longitude',
+      }).code(400);
+    }
+
+
+    try {
+  // Query untuk mengambil semua data emergency dalam radius 100 meter dari lokasi pengguna
+  const [emergencies] = await db.query(
+    `SELECT * FROM T_emergency 
+    WHERE ST_Distance_Sphere(
+      POINT(SUBSTRING_INDEX(pet_location, ',', -1), SUBSTRING_INDEX(pet_location, ',', 1)), 
+      POINT(?, ?)
+    ) <= 1000`,
+    [lng, lat] // Urutan parameter sesuai dengan urutan dalam query POINT()
+  );
+
+  fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`)
+  .then(response => response.json())
+  .then(data => {
+      if (data.address) {
+          console.log("Nama Jalan:", data.display_name);
+      } else {
+          console.error("Tidak ditemukan alamat untuk koordinat tersebut.");
+      }
+  })
+  .catch(error => console.error("Error:", error));
+
+      if (emergencies.length === 0) {
+        return h.response({
+          status: 'success',
+          message: 'Tidak ada data emergency dalam radius 1000 meter.',
+          data: [],
+        }).code(200);
+      }
+
+      console.log('Data emergency dalam radius 1000 meter ditemukan:', emergencies);
+
       return h.response({
         status: 'success',
-        message: 'Tidak ada data emergency dalam radius 1000 meter.',
-        data: [],
+        message: 'Data emergency berhasil diambil',
+        data: emergencies,
       }).code(200);
+    } catch (error) {
+      console.error('Error dalam mengambil data emergency:', error);
+      return h.response({
+        status: 'fail',
+        message: 'Terjadi kesalahan dalam memproses permintaan',
+      }).code(500);
     }
-
-    console.log('Data emergency dalam radius 1000 meter ditemukan:', emergencies);
-
-    return h.response({
-      status: 'success',
-      message: 'Data emergency berhasil diambil',
-      data: emergencies,
-    }).code(200);
-  } catch (error) {
-    console.error('Error dalam mengambil data emergency:', error);
-    return h.response({
-      status: 'fail',
-      message: 'Terjadi kesalahan dalam memproses permintaan',
-    }).code(500);
-  }
-};
+  };
 
 
 module.exports = { createEmergency, dataEmergencyWaiting, getEmergenciesWithinRadius };
