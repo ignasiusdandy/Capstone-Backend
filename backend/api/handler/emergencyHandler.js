@@ -152,31 +152,54 @@ const getEmergenciesWithinRadius = async (request, h) => {
   const { userLocation } = request.query; // asumsikan format { lat, lng }
 
   // Validasi untuk memastikan lokasi pengguna tersedia
-  console.log(userLocation, userLocation.lat, userLocation.lng);
-  if (!userLocation || !userLocation.lat || !userLocation.lng) {
+  console.log(userLocation);
+  if (!userLocation) {
     return h.response({
       status: 'fail',
       message: 'Lokasi pengguna harus disertakan dengan benar',
     }).code(400);
   }
 
+  // Parsing JSON string yang diterima dari query parameter
+  let location;
   try {
-    // Query untuk mengambil semua data emergency dalam radius 500 meter dari lokasi pengguna
+    location = JSON.parse(userLocation);
+  } catch (error) {
+    return h.response({
+      status: 'fail',
+      message: 'Format lokasi tidak valid. Pastikan formatnya adalah JSON',
+    }).code(400);
+  }
+
+  // Validasi apakah lat dan lng ada dalam objek lokasi
+  const { lat, lng } = location;
+  if (typeof lat === 'undefined' || typeof lng === 'undefined') {
+    return h.response({
+      status: 'fail',
+      message: 'Lokasi pengguna harus memiliki latitude dan longitude',
+    }).code(400);
+  }
+
+  console.log('Latitude:', lat);
+  console.log('Longitude:', lng);
+
+  try {
+    // Query untuk mengambil semua data emergency dalam radius 100 meter dari lokasi pengguna
     const [emergencies] = await db.query(
       `SELECT * FROM T_emergency 
-      WHERE ST_Distance_Sphere(POINT(lng, lat), POINT(?, ?)) <= 500`,
-      [userLocation.lng, userLocation.lat]
+      WHERE ST_Distance_Sphere(POINT(lng, lat), POINT(?, ?)) <= 100`, 
+      [lng, lat] // Urutan parameter sesuai dengan urutan dalam query POINT()
     );
 
     if (emergencies.length === 0) {
       return h.response({
         status: 'success',
-        message: 'Tidak ada data emergency dalam radius 500 meter.',
+        message: 'Tidak ada data emergency dalam radius 100 meter.',
         data: [],
       }).code(200);
     }
 
-    console.log('Data emergency dalam radius 500 meter ditemukan:', emergencies);
+    console.log('Data emergency dalam radius 100 meter ditemukan:', emergencies);
 
     return h.response({
       status: 'success',
