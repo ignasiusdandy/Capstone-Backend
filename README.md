@@ -171,6 +171,8 @@ exit
 node api/config/migrations/createDatabase.js
 
 -- create tablee
+npx knex migrate:down
+
 npx knex migrate:up
 ```
 
@@ -193,7 +195,7 @@ docker exec -it mysql_db mysql -u root -p'dandy' -h 127.0.0.1
 
 -- masuk ke node
 docker exec -it node_app /bin/sh
-apt-get update && apt-get install -y nano
+apt-get update && apt-get install -y nano   
 
 
 -- periksa apakah berjalan
