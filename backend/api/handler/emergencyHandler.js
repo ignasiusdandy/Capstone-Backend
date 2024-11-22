@@ -184,12 +184,15 @@ const getEmergenciesWithinRadius = async (request, h) => {
   console.log('Longitude:', lng);
 
   try {
-    // Query untuk mengambil semua data emergency dalam radius 100 meter dari lokasi pengguna
-    const [emergencies] = await db.query(
-      `SELECT * FROM T_emergency 
-      WHERE ST_Distance_Sphere(POINT(lng, lat), POINT(?, ?)) <= 100`, 
-      [lng, lat] // Urutan parameter sesuai dengan urutan dalam query POINT()
-    );
+   // Query untuk mengambil semua data emergency dalam radius 100 meter dari lokasi pengguna
+   const [emergencies] = await db.query(
+    `SELECT * FROM T_emergency 
+     WHERE ST_Distance_Sphere(
+       POINT(SUBSTRING_INDEX(pet_location, ',', 1), SUBSTRING_INDEX(pet_location, ',', -1)), 
+       POINT(?, ?)
+     ) <= 100`,
+    [lng, lat] // Urutan parameter sesuai dengan urutan dalam query POINT()
+  );
 
     if (emergencies.length === 0) {
       return h.response({
