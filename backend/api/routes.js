@@ -1,5 +1,5 @@
 const { registerHandler, loginHandler, logoutHandler } = require('./handler/authHandler');
-const { createEmergency, dataEmergencyWaiting } = require('./handler/emergencyHandler');
+const { createEmergency, dataEmergencyWaiting, getEmergenciesWithinRadius } = require('./handler/emergencyHandler');
 const verifyTokenMiddleware = require('./middleware/verifyTokenMiddleware');
 
 const routes = [
