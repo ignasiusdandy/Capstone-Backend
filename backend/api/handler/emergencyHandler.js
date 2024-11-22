@@ -111,17 +111,6 @@ const dataEmergencyWaiting = async (request, h) => {
       ['Waiting']
     );
     
-    fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`)
-  .then(response => response.json())
-  .then(data => {
-      if (data.address) {
-          console.log("Nama Jalan:", data.display_name);
-      } else {
-          console.error("Tidak ditemukan alamat untuk koordinat tersebut.");
-      }
-  })
-  .catch(error => console.error("Error:", error));
-
     // Jika tidak ada data yang ditemukan
     if (rows.length === 0) {
       return h.response({
@@ -131,11 +120,32 @@ const dataEmergencyWaiting = async (request, h) => {
       }).code(200);
     }
 
+    // Ambil data alamat untuk setiap entry
+    const updatedRows = await Promise.all(rows.map(async (row) => {
+      const { latitude, longitude } = row;
+
+      try {
+        const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`);
+        const data = await response.json();
+
+        if (data.address) {
+          row.address = data.display_name; // Menambahkan alamat ke dalam row
+        } else {
+          row.address = "Alamat tidak ditemukan";
+        }
+      } catch (error) {
+        console.error("Error fetching address:", error);
+        row.address = "Error fetching address";
+      }
+
+      return row;
+    }));
+
     // Jika data ditemukan
     return h.response({
       status: 'success',
       message: 'Emergency entries with status Waiting retrieved successfully.',
-      data: rows,
+      data: updatedRows,
     }).code(200);
   } catch (error) {
     console.error('Error fetching emergency data:', error);
@@ -145,6 +155,7 @@ const dataEmergencyWaiting = async (request, h) => {
     }).code(500);
   }
 };
+
 
   const getEmergenciesWithinRadius = async (request, h) => {
     console.log('Terhubung untuk mengambil data emergency dalam radius 1000 meter');
