@@ -21,7 +21,6 @@ exports.up = function(knex) {
       table.string('em_id', 10).primary();
       table.string('id_user', 10);
       table.string('pic_pet', 256);
-      table.string('pet_category', 10);
       table.string('pet_community', 100);
       table.string('pet_location', 100);
       table.date('created_at');
