@@ -216,7 +216,7 @@ const dataEmergencyWaiting = async (request, h) => {
 
       return h.response({
         status: 'success',
-        message: 'Data emergency berhasil diambil',
+        message: 'Data emergency berhasil diambil ke menu community',
         data: emergencies,
       }).code(200);
     } catch (error) {
