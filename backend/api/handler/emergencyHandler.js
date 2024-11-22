@@ -67,8 +67,8 @@ const createEmergency = async (request, h) => {
     // Simpan data emergency dan URL gambar ke database
     console.log('Mulai menyimpan ke database');
     await db.query(
-      'INSERT INTO T_emergency (em_id, id_user, pic_pet, pet_category, pet_community, pet_location, created_at, pet_status, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
-      [id, userId, publicUrl, pet_category, pet_community, pet_location, created_at, pet_status, notes]
+      'INSERT INTO T_emergency (em_id, id_user, pic_pet, pet_category,  pet_location, created_at, pet_status, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+      [id, userId, publicUrl, pet_category, pet_location, created_at, pet_status, notes]
     );
     console.log('Selesai ke database');
 
@@ -82,7 +82,6 @@ const createEmergency = async (request, h) => {
         Category: pet_category,
         Picture: publicUrl,
         Location: pet_location,
-        Filter: pet_community,
         Status: pet_status,
         Created_at: created_at,
         notes: notes,
@@ -103,10 +102,24 @@ const dataEmergencyWaiting = async (request, h) => {
   try {
     // Ambil data dari database
     const [rows] = await db.query(
-      'SELECT em_id, id_user, pic_pet, pet_category, pet_community, SUBSTRING_INDEX(pet_location, ',', 1) AS latitude,SUBSTRING_INDEX(pet_location, ',', -1) AS longitude, created_at, pet_status, notes FROM T_emergency WHERE pet_status = ?',
+      `SELECT em_id, id_user, pic_pet, pet_category, pet_community, 
+       SUBSTRING_INDEX(pet_location, ',', 1) AS latitude, 
+       SUBSTRING_INDEX(pet_location, ',', -1) AS longitude, 
+       created_at, pet_status, notes 
+       FROM T_emergency WHERE pet_status = ?`,
       ['Waiting']
     );
-    console.log(latitude, longitude);
+    
+    fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`)
+  .then(response => response.json())
+  .then(data => {
+      if (data.address) {
+          console.log("Nama Jalan:", data.display_name);
+      } else {
+          console.error("Tidak ditemukan alamat untuk koordinat tersebut.");
+      }
+  })
+  .catch(error => console.error("Error:", error));
 
     // Jika tidak ada data yang ditemukan
     if (rows.length === 0) {
