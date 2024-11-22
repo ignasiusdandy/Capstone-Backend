@@ -208,9 +208,9 @@ const dataEmergencyWaiting = async (request, h) => {
   .then(response => response.json())
   .then(data => {
       if (data.address) {
-          console.log("Nama Jalan:", data.display_name);
+        emergency.address = data.display_name;
       } else {
-          console.error("Tidak ditemukan alamat untuk koordinat tersebut.");
+        emergency.address = "Alamat tidak ditemukan";
       }
   })
   .catch(error => console.error("Error:", error));
