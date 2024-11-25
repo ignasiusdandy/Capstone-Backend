@@ -333,4 +333,121 @@ const dataEmergencyWaiting = async (request, h) => {
   };
 
 
-module.exports = { createEmergency, dataEmergencyWaiting, getEmergenciesWithinRadius, updateEmergencyUser };
+  const acceptEmergency = async (request, h) => {
+    console.log('Terhubung ke endpoint accept');
+  
+    const { em_id, pet_status } = request.payload; // Mendapatkan ID emergency dan status baru dari payload
+    const { userId } = request.auth; // Mendapatkan ID user dari authentication
+    
+    console.log('User ID:', userId);
+    console.log('Emergency ID:', em_id);
+    console.log('New Status:', pet_status);
+  
+    // Validasi untuk memastikan semua data penting harus diisi
+    if (!em_id || !pet_status) {
+      return h.response({
+        status: 'fail',
+        message: 'emergency ID and new status must be provided',
+      }).code(400);
+    }
+  
+    try {
+      // Mengecek apakah emergency dengan ID tertentu milik user yang sesuai ada di database
+      const [existingEmergency] = await db.query(
+        'SELECT * FROM T_emergency WHERE em_id = ? AND id_user = ?',
+        [em_id, userId]
+      );
+  
+      if (!existingEmergency) {
+        return h.response({
+          status: 'fail',
+          message: 'Emergency not found or you do not have permission to update it',
+        }).code(404);
+      }
+  
+      // Memperbarui status emergency di database
+      await db.query(
+        'UPDATE T_emergency SET pet_status = ? WHERE em_id = ? AND id_user = ?',
+        [pet_status, em_id, userId]
+      );
+  
+      console.log('Status berhasil diperbarui');
+      return h.response({
+        status: 'success',
+        message: 'Emergency status successfully updated to accept',
+        data: {
+          EmergencyId: em_id,
+          NewStatus: pet_status,
+        },
+      }).code(200);
+    } catch (error) {
+      console.error('Error updating emergency status:', error);
+      return h.response({
+        status: 'fail',
+        message: 'Error processing request',
+      }).code(500);
+    }
+  };
+
+  const completeEmergency = async (request, h) => {
+    const { em_id, id_user, date_end, pet_category, evidence_saved } = request.payload;
+  
+    // Validasi input
+    if (!em_id || !id_user || !date_end || !pet_category || !evidence_saved) {
+      return h.response({
+        status: 'fail',
+        message: 'All fields (em_id, id_user, date_end, pet_category, evidence_saved) must be provided',
+      }).code(400);
+    }
+  
+    try {
+      // Memastikan emergency dengan ID ada
+      const [existingEmergency] = await db.query(
+        'SELECT * FROM T_emergency WHERE em_id = ?',
+        [em_id]
+      );
+  
+      if (existingEmergency.length === 0) {
+        return h.response({
+          status: 'fail',
+          message: 'Emergency entry not found',
+        }).code(404);
+      }
+  
+      // Update status emergency menjadi Complete
+      await db.query(
+        'UPDATE T_emergency SET pet_status = ? WHERE em_id = ?',
+        ['Complete', em_id]
+      );
+  
+      // Masukkan data ke tabel T_ask
+      await db.query(
+        'INSERT INTO T_ask (em_id, id_user, date_end, pet_category, evidence_saved) VALUES (?, ?, ?, ?, ?)',
+        [em_id, id_user, date_end, pet_category, evidence_saved]
+      );
+  
+      console.log(`Emergency ID ${em_id} status updated to Complete and logged to T_ask`);
+  
+      return h.response({
+        status: 'success',
+        message: 'Emergency completed and logged successfully',
+        data: {
+          em_id,
+          id_user,
+          date_end,
+          pet_category,
+          evidence_saved,
+        },
+      }).code(200);
+    } catch (error) {
+      console.error('Error completing emergency:', error);
+      return h.response({
+        status: 'fail',
+        message: 'Error processing request',
+      }).code(500);
+    }
+  };  
+  
+
+
+module.exports = { createEmergency, dataEmergencyWaiting, getEmergenciesWithinRadius, updateEmergencyUser, acceptEmergency, completeEmergency };
