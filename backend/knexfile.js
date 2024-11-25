@@ -16,7 +16,10 @@ module.exports = {
     },
     migrations: {
       directory: __dirname + '/api/config/migrations'
-    }
+    },
+    seeds:{
+      directory: __dirname + '/api/config/seeds'
+    },
   },
 
   staging: {

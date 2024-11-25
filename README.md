@@ -175,6 +175,9 @@ node api/config/migrations/createDatabase.js
 npx knex migrate:down
 
 npx knex migrate:up
+
+-- seeds
+knex seed:make users
 ```
 
 ## penginstalan with docker
