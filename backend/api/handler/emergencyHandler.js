@@ -114,41 +114,41 @@ const updateEmergencyUser = async (request, h) => {
   }
 
   const created_at = new Date().toISOString().slice(0, 19).replace('T', ' ');
-  const pet_status = 'Waiting'; // status bisa diperbarui sesuai dengan kebutuhan
+  const pet_status = 'Waiting'; 
 
   try {
-    // Jika gambar pet diunggah, unggah gambar baru ke GCS
-    let publicUrl = null;
+    // Ambil URL foto yang lama dari database berdasarkan em_id
+    const result = await db.query('SELECT pic_pet FROM T_emergency WHERE em_id = ?', [em_id]);
+  
+    if (result.length === 0) {
+      return h.response({
+        status: 'fail',
+        message: 'Emergency record not found',
+      }).code(404);
+    }
+  
+    // Jika ada foto baru (pic_pet), unggah gambar ke GCS dan perbarui URL
+    let publicUrl = result[0].pic_pet; // Gunakan URL foto yang lama
+  
     if (pic_pet) {
-      const id = nanoid(10);
-      const gcsFileName = `pets/${id}`;
+      const gcsFileName = `pets/${em_id}`;
       const file = bucket.file(gcsFileName);
-
-      // Unggah file ke Google Cloud Storage
+  
+      // 3. Upload file ke Google Cloud Storage
       await new Promise((resolve, reject) => {
         const stream = file.createWriteStream({
           metadata: {
             contentType: pic_pet.hapi.headers['content-type'],
           },
         });
-
-        stream.on('error', (err) => {
-          console.error('GCS upload error:', err);
-          reject(err);
-        });
-
-        stream.on('finish', () => {
-          console.log('File berhasil diunggah ke GCS');
-          resolve();
-        });
-
+  
+        stream.on('error', (err) => reject(err));
+        stream.on('finish', () => resolve());
         stream.end(pic_pet._data);
       });
-
-      // Mendapatkan URL file yang telah diunggah
+  
       publicUrl = `https://storage.googleapis.com/${bucketName}/${gcsFileName}`;
     }
-
     // Menyimpan data yang diperbarui ke database
     console.log('Mulai memperbarui data ke database');
     await db.query(
