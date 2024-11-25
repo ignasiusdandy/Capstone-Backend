@@ -177,7 +177,7 @@ npx knex migrate:down
 npx knex migrate:up
 
 -- seeds
-knex seed:make users
+npx seed knex:run
 ```
 
 ## penginstalan with docker

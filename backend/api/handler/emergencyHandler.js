@@ -113,7 +113,7 @@ const updateEmergencyUser = async (request, h) => {
     }).code(400);
   }
 
-  const updated_at = new Date().toISOString().slice(0, 19).replace('T', ' '); // tanggal update
+  const created_at = new Date().toISOString().slice(0, 19).replace('T', ' ');
   const pet_status = 'Waiting'; // status bisa diperbarui sesuai dengan kebutuhan
 
   try {
@@ -152,12 +152,12 @@ const updateEmergencyUser = async (request, h) => {
     // Menyimpan data yang diperbarui ke database
     console.log('Mulai memperbarui data ke database');
     await db.query(
-      'UPDATE T_emergency SET pic_pet = ?, pet_category = ?, pet_location = ?, updated_at = ?, pet_status = ?, notes = ? WHERE em_id = ? AND id_user = ?',
+      'UPDATE T_emergency SET pic_pet = ?, pet_category = ?, pet_location = ?, created_at = ?, pet_status = ?, notes = ? WHERE em_id = ? AND id_user = ?',
       [
         publicUrl || null, // jika tidak ada gambar baru, gunakan null
         pet_category,
         pet_location,
-        updated_at,
+        created_at,
         pet_status,
         notes,
         em_id, // ID emergency yang ingin diperbarui
@@ -177,7 +177,7 @@ const updateEmergencyUser = async (request, h) => {
         Picture: publicUrl || 'No change in picture', // jika gambar tidak diubah
         Location: pet_location,
         Status: pet_status,
-        Updated_at: updated_at,
+        Updated_at: created_at,
         notes: notes,
       },
     }).code(200);
