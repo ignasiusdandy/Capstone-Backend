@@ -96,6 +96,99 @@ const createEmergency = async (request, h) => {
   }
 };
 
+const updateEmergencyUser = async (request, h) => {
+  console.log('terhubung ke emergency update');
+
+  const { pic_pet, pet_category, pet_location, notes } = request.payload;
+  const { userId } = request.auth;
+  const { em_id } = request.params; // mengambil ID emergency yang ingin diperbarui
+  console.log(userId);
+  console.log(pic_pet, pet_category, pet_location);
+
+  // Validasi untuk memastikan data yang wajib diisi tidak kosong
+  if (!pic_pet || !pet_category || !pet_location) {
+    return h.response({
+      status: 'fail',
+      message: 'all data must be filled',
+    }).code(400);
+  }
+
+  const updated_at = new Date().toISOString().slice(0, 19).replace('T', ' '); // tanggal update
+  const pet_status = 'Waiting'; // status bisa diperbarui sesuai dengan kebutuhan
+
+  try {
+    // Jika gambar pet diunggah, unggah gambar baru ke GCS
+    let publicUrl = null;
+    if (pic_pet) {
+      const id = nanoid(10);
+      const gcsFileName = `pets/${id}`;
+      const file = bucket.file(gcsFileName);
+
+      // Unggah file ke Google Cloud Storage
+      await new Promise((resolve, reject) => {
+        const stream = file.createWriteStream({
+          metadata: {
+            contentType: pic_pet.hapi.headers['content-type'],
+          },
+        });
+
+        stream.on('error', (err) => {
+          console.error('GCS upload error:', err);
+          reject(err);
+        });
+
+        stream.on('finish', () => {
+          console.log('File berhasil diunggah ke GCS');
+          resolve();
+        });
+
+        stream.end(pic_pet._data);
+      });
+
+      // Mendapatkan URL file yang telah diunggah
+      publicUrl = `https://storage.googleapis.com/${bucketName}/${gcsFileName}`;
+    }
+
+    // Menyimpan data yang diperbarui ke database
+    console.log('Mulai memperbarui data ke database');
+    await db.query(
+      'UPDATE T_emergency SET pic_pet = ?, pet_category = ?, pet_location = ?, updated_at = ?, pet_status = ?, notes = ? WHERE em_id = ? AND id_user = ?',
+      [
+        publicUrl || null, // jika tidak ada gambar baru, gunakan null
+        pet_category,
+        pet_location,
+        updated_at,
+        pet_status,
+        notes,
+        em_id, // ID emergency yang ingin diperbarui
+        userId, // Pastikan user yang mengupdate adalah yang memiliki entri
+      ]
+    );
+    console.log('Selesai memperbarui ke database');
+
+    // Mengembalikan respons berhasil
+    return h.response({
+      status: 'success',
+      message: 'Emergency successfully updated',
+      data: {
+        EmergencyId: em_id,
+        idUser: userId,
+        Category: pet_category,
+        Picture: publicUrl || 'No change in picture', // jika gambar tidak diubah
+        Location: pet_location,
+        Status: pet_status,
+        Updated_at: updated_at,
+        notes: notes,
+      },
+    }).code(200);
+  } catch (error) {
+    console.error('Error updating database or GCS upload:', error);
+    return h.response({
+      status: 'fail',
+      message: 'Error processing request',
+    }).code(500);
+  }
+};
 
 const dataEmergencyWaiting = async (request, h) => {
   console.log('Get data status Waiting');
@@ -240,4 +333,4 @@ const dataEmergencyWaiting = async (request, h) => {
   };
 
 
-module.exports = { createEmergency, dataEmergencyWaiting, getEmergenciesWithinRadius };
+module.exports = { createEmergency, dataEmergencyWaiting, getEmergenciesWithinRadius, updateEmergencyUser };

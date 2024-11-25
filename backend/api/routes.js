@@ -1,5 +1,5 @@
 const { registerHandler, loginHandler, logoutHandler } = require('./handler/authHandler');
-const { createEmergency, dataEmergencyWaiting, getEmergenciesWithinRadius } = require('./handler/emergencyHandler');
+const { createEmergency, dataEmergencyWaiting, getEmergenciesWithinRadius, updateEmergencyUser } = require('./handler/emergencyHandler');
 const verifyTokenMiddleware = require('./middleware/verifyTokenMiddleware');
 
 const routes = [
@@ -30,6 +30,21 @@ const routes = [
         multipart: true,
       },
       handler: createEmergency,
+      pre: [{ method: verifyTokenMiddleware }], 
+    },
+  },
+  {
+    method: 'PUT',
+    path: '/emergency/update/{em_id}',
+    options: {
+      payload: {
+        output: 'stream',
+        parse: true,
+        allow: ['multipart/form-data'], 
+        maxBytes: 1024 * 1024 * 10, 
+        multipart: true,
+      },
+      handler: updateEmergencyUser,
       pre: [{ method: verifyTokenMiddleware }], 
     },
   },
