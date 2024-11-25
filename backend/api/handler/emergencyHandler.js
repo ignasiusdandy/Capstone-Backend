@@ -386,20 +386,27 @@ const dataEmergencyWaiting = async (request, h) => {
   };
 
   const completeEmergency = async (request, h) => {
-  
+    console.log('Terhubung ke endpoint completeEmergency');
+
+  const { em_id } = request.params; // Mengambil ID emergency dari parameter
+  const { userId } = request.auth; // Mendapatkan ID user dari auth token
     try {
-      // Memastikan emergency dengan ID ada
-      const [existingEmergency] = await db.query(
-        'SELECT * FROM T_emergency WHERE em_id = ?',
-        [em_id]
-      );
-  
-      if (existingEmergency.length === 0) {
-        return h.response({
-          status: 'fail',
-          message: 'Emergency entry not found',
-        }).code(404);
-      }
+       // Memastikan emergency dengan ID tertentu ada di database
+    const [existingEmergency] = await db.query(
+      'SELECT * FROM T_emergency WHERE em_id = ? AND id_user = ?',
+      [em_id, userId]
+    );
+
+    if (existingEmergency.length === 0) {
+      return h.response({
+        status: 'fail',
+        message: 'Emergency entry not found or not accessible',
+      }).code(404);
+    }
+
+    const emergency = existingEmergency[0];
+    const date_end = new Date().toISOString().slice(0, 19).replace('T', ' ');
+    const { pet_category, pic_pet } = emergency;
   
       // Update status emergency menjadi Complete
       await db.query(
@@ -410,7 +417,7 @@ const dataEmergencyWaiting = async (request, h) => {
       // Masukkan data ke tabel T_ask
       await db.query(
         'INSERT INTO T_ask (em_id, id_user, date_end, pet_category, evidence_saved) VALUES (?, ?, ?, ?, ?)',
-        [em_id, id_user, date_end, pet_category, evidence_saved]
+        [em_id, id_user, date_end, pet_category, pic_pet]
       );
   
       console.log(`Emergency ID ${em_id} status updated to Complete and logged to T_ask`);
