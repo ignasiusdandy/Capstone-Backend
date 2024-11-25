@@ -407,6 +407,19 @@ const dataEmergencyWaiting = async (request, h) => {
     const emergency = existingEmergency[0];
     const date_end = new Date().toISOString().slice(0, 19).replace('T', ' ');
     const { pet_category, pic_pet } = emergency;
+
+    // Memeriksa apakah entri duplikat sudah ada di tabel T_ask
+    const [duplicateEntry] = await db.query(
+      'SELECT * FROM T_ask WHERE em_id = ? AND id_user = ?',
+      [em_id, userId]
+    );
+
+    if (duplicateEntry.length > 0) {
+      return h.response({
+        status: 'fail',
+        message: 'Duplicate entry detected for this emergency and user',
+      }).code(400); // Bad Request
+    }
   
       // Update status emergency menjadi Complete
       await db.query(
