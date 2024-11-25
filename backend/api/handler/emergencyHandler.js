@@ -336,20 +336,16 @@ const dataEmergencyWaiting = async (request, h) => {
   const acceptEmergency = async (request, h) => {
     console.log('Terhubung ke endpoint accept');
   
-    const { em_id, pet_status } = request.payload; // Mendapatkan ID emergency dan status baru dari payload
     const { userId } = request.auth; // Mendapatkan ID user dari authentication
+    const { em_id } = request.params; // mengambil ID emergency yang ingin diperbarui
+
     
     console.log('User ID:', userId);
     console.log('Emergency ID:', em_id);
+    const pet_status = 'accept'; // mengambil ID emergency yang ingin diperbarui
     console.log('New Status:', pet_status);
-  
-    // Validasi untuk memastikan semua data penting harus diisi
-    if (!em_id || !pet_status) {
-      return h.response({
-        status: 'fail',
-        message: 'emergency ID and new status must be provided',
-      }).code(400);
-    }
+
+
   
     try {
       // Mengecek apakah emergency dengan ID tertentu milik user yang sesuai ada di database
@@ -390,15 +386,6 @@ const dataEmergencyWaiting = async (request, h) => {
   };
 
   const completeEmergency = async (request, h) => {
-    const { em_id, id_user, date_end, pet_category, evidence_saved } = request.payload;
-  
-    // Validasi input
-    if (!em_id || !id_user || !date_end || !pet_category || !evidence_saved) {
-      return h.response({
-        status: 'fail',
-        message: 'All fields (em_id, id_user, date_end, pet_category, evidence_saved) must be provided',
-      }).code(400);
-    }
   
     try {
       // Memastikan emergency dengan ID ada
