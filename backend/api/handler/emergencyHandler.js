@@ -417,7 +417,7 @@ const dataEmergencyWaiting = async (request, h) => {
       // Masukkan data ke tabel T_ask
       await db.query(
         'INSERT INTO T_ask (em_id, id_user, date_end, pet_category, evidence_saved) VALUES (?, ?, ?, ?, ?)',
-        [em_id, id_user, date_end, pet_category, pic_pet]
+        [em_id, userId, date_end, pet_category, pic_pet]
       );
   
       console.log(`Emergency ID ${em_id} status updated to Complete and logged to T_ask`);
@@ -427,10 +427,10 @@ const dataEmergencyWaiting = async (request, h) => {
         message: 'Emergency completed and logged successfully',
         data: {
           em_id,
-          id_user,
+          userId,
           date_end,
           pet_category,
-          evidence_saved,
+          pic_pet,
         },
       }).code(200);
     } catch (error) {
