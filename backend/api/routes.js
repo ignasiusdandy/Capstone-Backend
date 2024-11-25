@@ -1,5 +1,5 @@
 const { registerHandler, loginHandler, logoutHandler } = require('./handler/authHandler');
-const { createEmergency, dataEmergencyWaiting, getEmergenciesWithinRadius, updateEmergencyUser } = require('./handler/emergencyHandler');
+const { createEmergency, dataEmergencyWaiting, getEmergenciesWithinRadius, updateEmergencyUser, acceptEmergency, completeEmergency } = require('./handler/emergencyHandler');
 const verifyTokenMiddleware = require('./middleware/verifyTokenMiddleware');
 
 const routes = [
@@ -60,6 +60,22 @@ const routes = [
     method: 'GET',
     path: '/community/emergency/dataList',
     handler: getEmergenciesWithinRadius,
+    options: {
+      pre: [verifyTokenMiddleware],
+    },
+  },
+  {
+    method: 'PUT',
+    path: '/emergency/acceptEmergency',
+    handler: acceptEmergency,
+    options: {
+      pre: [verifyTokenMiddleware],
+    },
+  },
+  {
+    method: 'PUT',
+    path: '/emergency/completeEmergency',
+    handler: completeEmergency,
     options: {
       pre: [verifyTokenMiddleware],
     },
