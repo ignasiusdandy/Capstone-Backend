@@ -66,7 +66,7 @@ const routes = [
   },
   {
     method: 'PUT',
-    path: '/emergency/acceptEmergency',
+    path: '/emergency/acceptEmergency/{em_id}',
     handler: acceptEmergency,
     options: {
       pre: [verifyTokenMiddleware],
@@ -74,7 +74,7 @@ const routes = [
   },
   {
     method: 'PUT',
-    path: '/emergency/completeEmergency',
+    path: '/emergency/completeEmergency/{em_id}',
     handler: completeEmergency,
     options: {
       pre: [verifyTokenMiddleware],
