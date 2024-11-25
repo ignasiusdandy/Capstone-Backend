@@ -5,7 +5,7 @@ exports.up = function(knex) {
       table.string('name_user', 80);
       table.string('email_user', 30);
       table.string('password_user', 70);
-      table.date('created_at');
+      table.datetime('created_at');
       table.string('role', 50);
       table.string('Pic_Profile', 100);
       table.string('Location', 100);
