@@ -9,14 +9,17 @@
 
 
 ## Endpoint Routes
-| Route                         | HTTP Method | Description                    | Token        |
-| ----------------------------- | ----------- | ---------------------------    | ------------ |
-| /login                        | POST        | Log in a user                  | Not Required |
-| /register                     | POST        | Register a new user            | Not Required |
-| /logout                       | POST        | Logout account                 | Required     |
-| /emergency/create             | POST        | Create a new emergency         | Required     |
-| /emergency/waitingList        | GET         | List emergency "waiting"       | Required     |
-| /community/emergency/dataList | GET         | List emergency in community    | Required     |
+| Route                                 | HTTP Method | Description                    | Token        |
+| ------------------------------------- | ----------- | ---------------------------    | ------------ |
+| /login                                | POST        | Log in a user                  | Not Required |
+| /register                             | POST        | Register a new user            | Not Required |
+| /logout                               | POST        | Logout account                 | Required     |
+| /emergency/create                     | POST        | Create a new emergency         | Required     |
+| /emergency/update/{em_id}             | PUT         | Update emergency               | Required     |
+| /emergency/waitingList                | GET         | List emergency "waiting"       | Required     |
+| /community/emergency/dataList         | GET         | List emergency in community    | Required     |
+| /emergency/acceptEmergency/{em_id}    | PUT         | accept emergency               | Required     |
+| /emergency/completeEmergency/{em_id}  | PUT         | emergency with complete        | Required     |
 
 ## Tech Architecture
 
