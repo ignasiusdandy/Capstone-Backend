@@ -1,6 +1,6 @@
-exports.up = function(knex) {
+exports.up = function (knex) {
   return knex.schema
-    .createTable('T_user', function(table) {
+    .createTable('T_user', function (table) {
       table.string('id_user', 10).primary();
       table.string('name_user', 80);
       table.string('email_user', 30);
@@ -10,26 +10,29 @@ exports.up = function(knex) {
       table.string('Pic_Profile', 100);
       table.string('Location', 100);
     })
-    .createTable('T_article', function(table) {
+    .createTable('T_article', function (table) {
       table.string('id_article', 10).primary();
+      table.string('id_user', 10);
       table.string('name_author', 100);
       table.string('title', 50);
       table.string('content', 256);
+      table.string('pic_article', 100);
       table.datetime('create_at');
+      table.foreign('id_user').references('T_user.id_user').onDelete('CASCADE');
     })
-    .createTable('T_emergency', function(table) {
+    .createTable('T_emergency', function (table) {
       table.string('em_id', 10).primary();
       table.string('id_user', 10);
       table.string('pic_pet', 256);
       table.string('pet_category', 10);
       table.string('pet_location', 100);
-      table.date('created_at');
+      table.datetime('created_at');
       table.string('pet_status', 10);
       table.string('notes', 256);
       table.primary('id_user');
       table.foreign('id_user').references('T_user.id_user').onDelete('CASCADE');
     })
-    .createTable('T_ask', function(table) {
+    .createTable('T_ask', function (table) {
       table.string('em_id', 10);
       table.string('id_user', 10);
       table.date('date_end');
@@ -41,7 +44,7 @@ exports.up = function(knex) {
     });
 };
 
-exports.down = function(knex) {
+exports.down = function (knex) {
   return knex.schema
     .dropTableIfExists('T_ask')
     .dropTableIfExists('T_emergency')

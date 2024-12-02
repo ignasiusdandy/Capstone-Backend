@@ -16,10 +16,13 @@
 | /logout                               | POST        | Logout account                 | Required     |
 | /emergency/create                     | POST        | Create a new emergency         | Required     |
 | /emergency/update/{em_id}             | PUT         | Update emergency               | Required     |
-| /emergency/waitingList                | GET         | List emergency "waiting"       | Required     |
+| /emergency/userEmergency              | GET         | List emergency user            | Required     |
+| /emergency/reportList/{emergencyId}   | GET         | Progress user emergency        | Required     |
 | /community/emergency/dataList         | GET         | List emergency in community    | Required     |
 | /emergency/acceptEmergency/{em_id}    | PUT         | accept emergency               | Required     |
+| /emergency/acceptList                 | GET         | accept list menu community     | Required     |
 | /emergency/completeEmergency/{em_id}  | PUT         | emergency with complete        | Required     |
+| /emergency/completeList               | GET         | Complete list menu community   | Required     |
 
 ## Tech Architecture
 

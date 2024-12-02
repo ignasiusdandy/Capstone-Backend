@@ -124,8 +124,6 @@ const loginHandler = async (request, h) => {
     const token = jwt.sign(
       { userId: user.id_user, RoleAs: user.role },
       process.env.JWT_SECRET,
-      // hapus expires
-      { expiresIn: '1h' }
 
     );
 
