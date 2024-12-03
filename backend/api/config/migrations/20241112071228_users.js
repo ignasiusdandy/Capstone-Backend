@@ -35,7 +35,8 @@ exports.up = function (knex) {
     .createTable('T_ask', function (table) {
       table.string('em_id', 10);
       table.string('id_user', 10);
-      table.date('date_end');
+      table.datetime('date_accept');
+      table.datetime('date_end');
       table.string('pet_category', 50);
       table.string('evidence_saved', 100);
       table.primary(['em_id', 'id_user']);

@@ -268,6 +268,9 @@ const reportList = async (request, h) => {
 
   const { emergencyId } = request.params;
   const { userId } = request.auth;
+  console.log('emergencyId:', emergencyId);
+  console.log('userId:', userId);
+
 
   try {
     const [reportList] = await db.query(
@@ -277,20 +280,33 @@ const reportList = async (request, h) => {
           em.pet_status, 
           em.created_at, 
           usr.name_user AS name_user, 
-          DATE_FORMAT(em.created_at, '%d/%m/%Y') AS date_created, 
-          TIME(em.created_at) AS time_created,
+          CASE 
+            WHEN em.pet_status = 'Waiting' THEN DATE_FORMAT(em.created_at, '%d/%m/%Y') 
+            WHEN em.pet_status = 'accept' THEN DATE_FORMAT(ask.date_accept, '%d/%m/%Y')
+            WHEN em.pet_status = 'Complete' THEN DATE_FORMAT(ask.date_end, '%d/%m/%Y')
+            ELSE NULL
+          END AS date_status,
+          CASE 
+            WHEN em.pet_status = 'Waiting' THEN TIME(em.created_at) 
+            WHEN em.pet_status = 'accept' THEN TIME(ask.date_accept)
+            WHEN em.pet_status = 'Complete' THEN TIME(ask.date_end)
+            ELSE NULL
+          END AS time_status,
           ask.date_end, 
-          ask.id_user, 
+          ask.id_user AS id_community, 
           ask.pet_category, 
           community_usr.name_user AS name_community,
           ask.evidence_saved
        FROM T_emergency em
        LEFT JOIN T_ask ask ON em.em_id = ask.em_id
        JOIN T_user usr ON em.id_user = usr.id_user
-       JOIN T_user community_usr ON ask.id_user = community_usr.id_user
+       LEFT JOIN T_user community_usr ON ask.id_user = community_usr.id_user
        WHERE em.em_id = ? AND em.id_user = ?`,
       [emergencyId, userId] // Filter berdasarkan emergencyId dan userId
     );
+
+    console.log(reportList);
+    
 
 
     if (reportList.length === 0) {
@@ -466,6 +482,8 @@ const acceptEmergency = async (request, h) => {
     const emergency = existingEmergency[0];
     const pet_status = 'accept'; // Status yang akan diupdate menjadi 'accept'
     const { pet_category, pic_pet } = emergency; // Menyimpan data yang dibutuhkan untuk T_ask
+    const accept_at = new Date().toISOString().slice(0, 19).replace('T', ' ');
+
 
     // Memeriksa apakah entri duplikat sudah ada di tabel T_ask
     const [duplicateEntry] = await db.query(
@@ -488,8 +506,8 @@ const acceptEmergency = async (request, h) => {
 
     // Masukkan data ke tabel T_ask
     await db.query(
-      'INSERT INTO T_ask (em_id, id_user, pet_category, evidence_saved) VALUES (?, ?, ?, ?)',
-      [em_id, userId, pet_category, pic_pet]
+      'INSERT INTO T_ask (em_id, id_user, pet_category, evidence_saved, date_accept) VALUES (?, ?, ?, ?, ?)',
+      [em_id, userId, pet_category, pic_pet, accept_at]
     );
 
     console.log(`Emergency ID ${em_id} status updated to 'accept' and logged to T_ask`);
@@ -502,6 +520,7 @@ const acceptEmergency = async (request, h) => {
         id_user: userId,
         pet_category: pet_category,
         evidence_saved: pic_pet,
+        date_accept : accept_at
       },
     }).code(200);
 
@@ -530,8 +549,8 @@ const acceptEmergencyList = async (request, h) => {
           em.pic_pet,
           em.pet_status, 
           usr.name_user AS name_user, 
-          DATE_FORMAT(em.created_at, '%d/%m/%Y') AS date_created, 
-          TIME(em.created_at) AS time_created,
+          DATE_FORMAT(ask.date_accept, '%d/%m/%Y') AS date_created, 
+          TIME(ask.date_accept) AS time_created,
           community_usr.name_user AS name_community,
           em.notes
        FROM T_ask ask
@@ -652,6 +671,7 @@ const completeEmergency = async (request, h) => {
         date_end: date_end,
         pet_category: pet_category,
         evidence_saved: pic_pet,
+        pet_status : pet_status
       },
     }).code(200);
 
@@ -679,8 +699,8 @@ const completeEmergencyList = async (request, h) => {
             em.pic_pet,
             em.pet_status, 
             usr.name_user AS name_user, 
-            DATE_FORMAT(em.created_at, '%d/%m/%Y') AS date_created, 
-            TIME(em.created_at) AS time_created,
+            DATE_FORMAT(ask.date_end, '%d/%m/%Y') AS date_created, 
+            TIME(ask.date_end) AS time_created,
             community_usr.name_user AS name_community,
             em.notes
          FROM T_ask ask
@@ -690,6 +710,7 @@ const completeEmergencyList = async (request, h) => {
          WHERE ask.id_user = ? AND em.pet_status = 'Complete'`,
       [userId] // Parameter untuk filter id_user
     );
+
 
     // Jika tidak ada data emergency
     if (emergencies.length === 0) {
