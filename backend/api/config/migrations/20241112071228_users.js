@@ -14,8 +14,8 @@ exports.up = function (knex) {
       table.string('id_article', 10).primary();
       table.string('id_user', 10);
       table.string('name_author', 100);
-      table.string('title', 50);
-      table.string('content', 256);
+      table.string('title', 256);
+      table.text('content'); 
       table.string('pic_article', 100);
       table.datetime('create_at');
       table.foreign('id_user').references('T_user.id_user').onDelete('CASCADE');

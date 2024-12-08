@@ -23,6 +23,11 @@
 | /emergency/acceptList                 | GET         | accept list menu community     | Required     |
 | /emergency/completeEmergency/{em_id}  | PUT         | emergency with complete        | Required     |
 | /emergency/completeList               | GET         | Complete list menu community   | Required     |
+| /article/create                       | POST        | Create Article                 | Required     |
+| /article/allArticle                   | GET         | Get List Article               | Required     |
+| /article/updateArticle/{id}           | PUT         | Update Article                 | Required     |
+| /article/deleteArticle/{id}           | DELETE      | Delete Article                 | Required     |
+
 
 ## Tech Architecture
 

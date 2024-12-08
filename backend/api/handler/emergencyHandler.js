@@ -29,6 +29,7 @@ const createEmergency = async (request, h) => {
     }).code(400);
   }
 
+
   const id = nanoid(10);
   const bucketFormat = nanoid(5);
   const created_at = new Date().toISOString().slice(0, 19).replace('T', ' ');
@@ -278,7 +279,6 @@ const reportList = async (request, h) => {
           em.em_id, 
           em.pet_location, 
           em.pet_status, 
-          em.created_at, 
           usr.name_user AS name_user, 
           CASE 
             WHEN em.pet_status = 'Waiting' THEN DATE_FORMAT(em.created_at, '%d/%m/%Y') 
@@ -292,9 +292,16 @@ const reportList = async (request, h) => {
             WHEN em.pet_status = 'Complete' THEN TIME(ask.date_end)
             ELSE NULL
           END AS time_status,
-          ask.date_end, 
+          DATE_FORMAT(em.created_at, '%d/%m/%Y') AS date_created, 
+              TIME(em.created_at) AS time_created,
+          DATE_FORMAT(ask.date_accept, '%d/%m/%Y') AS date_accept, 
+              TIME(ask.date_accept) AS time_accept,
+          DATE_FORMAT(ask.date_end, '%d/%m/%Y') AS date_end, 
+              TIME(ask.date_end) AS time_end,
           ask.id_user AS id_community, 
-          ask.pet_category, 
+          em.pet_category, 
+          em.pic_pet,
+          em.notes,
           community_usr.name_user AS name_community,
           ask.evidence_saved
        FROM T_emergency em
@@ -306,7 +313,7 @@ const reportList = async (request, h) => {
     );
 
     console.log(reportList);
-    
+
 
 
     if (reportList.length === 0) {
@@ -383,15 +390,15 @@ const getEmergenciesWithinRadius = async (request, h) => {
     }).code(400);
   }
 
-  // Validasi apakah lat dan lng ada dalam objek lokasi
   const { lat, lng } = location;
   if (typeof lat === 'undefined' || typeof lng === 'undefined') {
+    console.error('Latitude atau longitude tidak ditemukan:', location);
     return h.response({
       status: 'fail',
       message: 'Lokasi pengguna harus memiliki latitude dan longitude',
     }).code(400);
   }
-
+  
   try {
     // Query untuk mengambil semua data emergency dalam radius 1000 meter dari lokasi pengguna
     const [emergencies] = await db.query(
@@ -520,7 +527,7 @@ const acceptEmergency = async (request, h) => {
         id_user: userId,
         pet_category: pet_category,
         evidence_saved: pic_pet,
-        date_accept : accept_at
+        date_accept: accept_at
       },
     }).code(200);
 
@@ -671,7 +678,7 @@ const completeEmergency = async (request, h) => {
         date_end: date_end,
         pet_category: pet_category,
         evidence_saved: pic_pet,
-        pet_status : pet_status
+        pet_status: 'Complete'
       },
     }).code(200);
 
@@ -761,5 +768,4 @@ const completeEmergencyList = async (request, h) => {
   }
 };
 
-
-module.exports = { createEmergency, dataUserEmergency, getEmergenciesWithinRadius, updateEmergencyUser, acceptEmergency, acceptEmergencyList, completeEmergency, completeEmergencyList, reportList };
+module.exports = { createEmergency,  dataUserEmergency, getEmergenciesWithinRadius, updateEmergencyUser, acceptEmergency, acceptEmergencyList, completeEmergency, completeEmergencyList, reportList };

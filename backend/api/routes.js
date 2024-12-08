@@ -1,4 +1,4 @@
-const { createArticle, getAllArticles } = require('./handler/articleHandler');
+const { createArticle, getAllArticles, updateArticle, deleteArticle } = require('./handler/articleHandler');
 const { registerHandler, loginHandler, logoutHandler } = require('./handler/authHandler');
 const { createEmergency, getEmergenciesWithinRadius, updateEmergencyUser, acceptEmergency, completeEmergency, acceptEmergencyList, completeEmergencyList, dataUserEmergency, reportList } = require('./handler/emergencyHandler');
 const verifyTokenMiddleware = require('./middleware/verifyTokenMiddleware');
@@ -124,6 +124,29 @@ const routes = [
     method: 'GET',
     path: '/article/allArticle',
     handler: getAllArticles,
+    options: {
+      pre: [verifyTokenMiddleware],
+    },
+  },
+  {
+    method: 'PUT',
+    path: '/article/updateArticle/{id}',
+    options: {
+      payload: {
+        output: 'stream',
+        parse: true,
+        allow: ['multipart/form-data'], 
+        maxBytes: 1024 * 1024 * 10, 
+        multipart: true,
+      },
+      handler: updateArticle,
+      pre: [{ method: verifyTokenMiddleware }], 
+    },
+  },
+  {
+    method: 'DELETE',
+    path: '/article/deleteArticle/{id}',
+    handler: deleteArticle,
     options: {
       pre: [verifyTokenMiddleware],
     },

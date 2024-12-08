@@ -134,7 +134,11 @@ const updateArticle = async (request, h) => {
       [name_author, title, content, publicUrl, updated_at, id]
     );
 
-    return h.response({ status: 'success', message: 'Article successfully updated' }).code(200);
+    return h.response({ 
+      status: 'success', 
+      message: 'Article successfully updated', 
+      data: { name_author, title, content, pic_article: publicUrl, updated_at }
+    }).code(200);
   } catch (error) {
     console.error('Error updating article:', error);
     return h.response({ status: 'fail', message: 'Error updating article' }).code(500);
@@ -144,6 +148,8 @@ const updateArticle = async (request, h) => {
 // Delete Article
 const deleteArticle = async (request, h) => {
   const { id } = request.params;
+  console.log('Received ID:', id);
+
 
   try {
     const [article] = await db.query('SELECT pic_article FROM T_article WHERE id_article = ?', [id]);
