@@ -1,8 +1,20 @@
 ## Table of Content
 - [Desain ERD](#desain-erd-database)
+- [Endpoint Routes](#endpoint-routes)
+- [Tech Architecture](#tech-architecture)
 - [Format Database](#create-database)
-- [developer localhost](#developer)
-- [Create Bucket](#create-bucket)
+- [Dependencies](#dependencies)
+- [Installation Server](#installation-server)
+    - [Migrate Database](#migrate-database)
+    - [Run docker](#run-docker)
+- [Port](#port)
+- [Setup Google Cloud](#setup-google-cloud)
+    - [Create Bucket](#create-bucket)
+    - [Create Firewall](#create-firewall)
+    - [IAM](#iam)
+    - [Create Instance](#create-instance)
+    - [Create VPC](#create-vpc)
+
 
 ## Desain ERD database
 ![alt text](https://github.com/ignasiusdandy/Capstone-Backend/blob/master/src/petshop.png?raw=true)
@@ -30,83 +42,23 @@
 
 
 ## Tech Architecture
+- Node.js
+- Mysql
+- Docker Compose
+- Cloud Storage
 
 ## Dependencies
+- [**@google-cloud/storage**](https://www.npmjs.com/package/@google-cloud/storage) - Version: ^7.14.0
+- [**@hapi/hapi**](https://www.npmjs.com/package/@hapi/hapi) - Version: ^21.3.12
+- [**bcrypt**](https://www.npmjs.com/package/bcrypt) - Version: ^5.1.1
+- [**dotenv**](https://www.npmjs.com/package/dotenv) - Version: ^16.4.5
+- [**jsonwebtoken**](https://www.npmjs.com/package/jsonwebtoken) - Version: ^9.0.2
+- [**knex**](https://www.npmjs.com/package/knex) - Version: ^3.1.0
+- [**multer**](https://www.npmjs.com/package/multer) - Version: ^1.4.5-lts.1
+- [**mysql2**](https://www.npmjs.com/package/mysql2) - Version: ^3.11.4
+- [**nanoid**](https://www.npmjs.com/package/nanoid) - Version: ^3.3.7
 
-## Create Database
-```
-CREATE DATABASE petpoint;
-USE petpoint;
-
-
-# -- Tabel T_user
-CREATE TABLE T_user (
-    id_user CHAR(10) PRIMARY KEY,
-    name_user VARCHAR(80),
-    email_user VARCHAR(30),
-    password_user CHAR(70),
-    created_at DATE,
-    role VARCHAR(50),
-    Pic_Profile VARCHAR(100),
-    Location VARCHAR(100)
-);
-
-# -- Tabel T_article
-CREATE TABLE T_article (
-    id_article CHAR(10) PRIMARY KEY,
-    name_author VARCHAR(100),
-    title VARCHAR(50),
-    content VARCHAR(256),
-    create_at DATETIME
-);
-
-# -- Tabel T_emergency
-CREATE TABLE T_emergency (
-    em_id CHAR(10) PRIMARY KEY,
-    id_user CHAR(10),
-    pic_pet VARCHAR(256),
-    pet_category VARCHAR(10),
-    pet_community VARCHAR(100),
-    pet_location VARCHAR(100),
-    created_at DATE,
-    pet_status VARCHAR(10),
-    FOREIGN KEY (id_user) REFERENCES T_user(id_user) ON DELETE CASCADE
-);
-
-# -- Tabel ask (untuk relasi antara T_user dan T_emergency)
-CREATE TABLE T_ask (
-    em_id CHAR(10),
-    id_user CHAR(10),
-    date_end DATE,
-    pet_category VARCHAR(50),
-    evidence_saved VARCHAR(100),
-    PRIMARY KEY (em_id, id_user),
-    FOREIGN KEY (em_id) REFERENCES T_emergency(em_id) ON DELETE CASCADE,
-    FOREIGN KEY (id_user) REFERENCES T_user(id_user) ON DELETE CASCADE
-);
-```
-## Create Bucket
-1. Create a bucket with the name bucket-petpoint-capstone <br>
-```
-gsutil mb -l asia-southeast2 gs://bucket-petpoint-capstone
-gsutil acl ch -u AllUsers:R gs://bucket-petpoint-capstone
-gsutil iam ch allUsers:objectViewer gs://bucket-petpoint-capstone
-```
-2. Go to service account <br>
-3. Klik Create Service Account <br>
-4. For service account name input "petpoint-data-admin" and klik create&continue <br>
-5. For Grant this service account access to project select a role to storage object admin <br>
-6. Klik done <br>
-7. Klik the service and klik menu keys <br>
-8. Klik "ADD KEY" and klik "Create new key" <br>
-9. Choose key type to JSON and klik create <br>
-10. Save the file credentials and you can use to backend later
-11. Go to bucket > permissions
-12. Klik grand access 
-13. For new principal input the service account
-14. For role select "storage object admin"
-
-## Installation
+## Installation Server
 1. Clone the repository project
 ```
 git clone -b master https://github.com/ignasiusdandy/Capstone-Backend 
@@ -175,9 +127,7 @@ exit
 ```
 
 
-
-
-## penginstalan localhost
+### Migrate Database
 ```
 -- install database
 node api/config/migrations/createDatabase.js
@@ -191,9 +141,9 @@ npx knex migrate:up
 npx seed knex:run
 ```
 
-## penginstalan with docker
+### Run docker
 ```
--- menginstall docker
+-- Install docker
 sudo apt update
 sudo apt install docker-compose -y
 sudo systemctl start docker
@@ -204,73 +154,53 @@ docker-compose up -d
 --Cek id
 docker ps
 
--- masuk ke mysql
+-- login to mysql docker
 docker exec -it <container_id_or_name> mysql -u root -p
 docker exec -it mysql_db mysql -u root -p'dandy' -h 127.0.0.1
 
--- masuk ke node
+-- login to node server
 docker exec -it node_app /bin/sh
 apt-get update && apt-get install -y nano   
 
-
--- periksa apakah berjalan
+-- Check log server
 docker logs node_app
 docker logs -f node_app
 
-
-
--- mematikkan docker
+-- Shutdown and update docker
 docker-compose down
 docker system prune -a --volumes -f
 docker-compose build --no-cache
 docker-compose up -d
 
--- menghapus perubahan dan pull
-git reset --hard HEAD
-git pull origin master
-
 ```
 
-# port
-vm instance =
-sql = 3000
+## Port
+Backend server port   = 5000
+Machine learning port = 3000
 
-## developer
-lakukan git clone dan masuk ke folder backend
+## Setup Google Cloud
+### Create Bucket
+1. Create a bucket with the name bucket-petpoint-capstone <br>
 ```
-git clone https://github.com/ignasiusdandy/Capstone-Backend.git
-cd Capstone-Backend
-cd backend
-``` 
-pastikan port sql anda 3307 atau jika ingin ganti port silahkan ganti di .env <br>
-Buat database dengan nama = **db-petpoint** <br>
-lakukan pembuatan database seperti langkah diatas! <br>
-lakukan penginstalan npm dengan versi v18.13.0 <br>
+gsutil mb -l asia-southeast2 gs://bucket-petpoint-capstone
+gsutil acl ch -u AllUsers:R gs://bucket-petpoint-capstone
+gsutil iam ch allUsers:objectViewer gs://bucket-petpoint-capstone
 ```
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | bash
+2. Go to service account <br>
+3. Klik Create Service Account <br>
+4. For service account name input "petpoint-data-admin" and klik create&continue <br>
+5. For Grant this service account access to project select a role to storage object admin <br>
+6. Klik done <br>
+7. Klik the service and klik menu keys <br>
+8. Klik "ADD KEY" and klik "Create new key" <br>
+9. Choose key type to JSON and klik create <br>
+10. Save the file credentials and you can use to backend later
+11. Go to bucket > permissions
+12. Klik grand access 
+13. For new principal input the service account
+14. For role select "storage object admin"
 
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  
-
-
-nvm install 18.13.0
-```
-jalankan npmnya menggunakan
-```
-npm run start
-```
-upload file json ke vm langsung
-gcloud compute scp capstone-cred.json server-petpoint:~/Capstone-Backend/backend --zone=asia-southeast2-a
-
-
-gcloud storage buckets add-iam-policy-binding gs://dicoding-project-capstone-danz \
-  --member="serviceAccount:storage-admin@capstone-petpoint.iam.gserviceaccount.com" \
-  --role="roles/storage.objectAdmin"
-
-
-
-## Create firewall
+### Create Firewall
 1. Go to VPC NETWORK > firewall <br>
 2. Klik "create firewall rule" <br>
 3. Name the firewall to "server-petpoint" <br>
@@ -280,7 +210,7 @@ gcloud storage buckets add-iam-policy-binding gs://dicoding-project-capstone-dan
 7. For protocols and ports centang CTP and fill port to "3000,4000,5000" <br>
 8. Klik create
 
-## iam 
+### IAM 
 Compute Instance Admin 
 1. Go to iam & admin > iam <br>
 2. Klik Grant Access <br>
@@ -288,7 +218,7 @@ Compute Instance Admin
 4. Select a role to
 5. Klik save
 
-# Create instance
+### Create Instance
 1. Go to Compute Engine > Vm Instance <br>
 2. Klik "Create Instance" <br>
 3. Name the instance "petpoint-instance" <br>
@@ -298,10 +228,9 @@ Compute Instance Admin
 7. For boot disk select to ubuntu and size to 50 GB <br>
 8. correct the checkbox to allow http traffic <br>
 9. For network tags enter "server-petpoint" <br>
-
 10. Klik create
 
-## Create VPC
+### Create VPC
 1. Go to Vpc Network
 2. Enter name to "vpc-capstone" <br>
 3. For subnet name enter "subnet-capstone" <br>
@@ -310,32 +239,3 @@ Compute Instance Admin
 6. Klik done <br>
 7. For firewall rule correct all checkbox <br>
 8. Klik Create
-
-## iam
-Batas on off saja
-```
-gcloud iam roles create startStopVMRole --project project-capstone-441902 \
-    --title="Start Stop VM Role" \
-    --permissions="compute.instances.start,compute.instances.stop,compute.instances.get" \
-    --stage="GA"
-```
-Tetapkan ke pengguna
-```
-gcloud projects add-iam-policy-binding project-capstone-441902 \
-    --member="user:a@example" \
-    --role="projects/project-capstone-441902/roles/startStopVMRole"
-```
-
-Hanya ssh saja
-```
-gcloud iam roles create sshAccessRole --project project-capstone-441902 \
-    --title="SSH Access Role" \
-    --permissions="compute.instances.get,compute.instances.list,compute.instances.osLogin,compute.projects.get" \
-    --stage="GA"
-```
-Ke pengguna
-```
-gcloud projects add-iam-policy-binding project-capstone-441902 \
-    --member="user:m704b4ky0875@bangkit.academy" \
-    --role="projects/project-capstone-441902/roles/sshAccessRole"
-```

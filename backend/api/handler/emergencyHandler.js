@@ -29,6 +29,32 @@ const createEmergency = async (request, h) => {
     }).code(400);
   }
 
+  // Validasi untuk memastikan pet_location adalah latitude,longitude yang valid
+  const locationParts = pet_location.split(',');
+  if (locationParts.length !== 2) {
+    return h.response({
+      status: 'fail',
+      message: 'Invalid pet_location format. Please provide latitude and longitude.',
+    }).code(400);
+  }
+
+  const latitude = parseFloat(locationParts[0]);
+  const longitude = parseFloat(locationParts[1]);
+
+  // Cek apakah latitude dan longitude berada dalam rentang yang valid
+  if (isNaN(latitude) || isNaN(longitude)) {
+    return h.response({
+      status: 'fail',
+      message: 'Latitude and Longitude must be valid numbers.',
+    }).code(400);
+  }
+
+  if (latitude < -90 || latitude > 90 || longitude < -180 || longitude > 180) {
+    return h.response({
+      status: 'fail',
+      message: 'Latitude must be between -90 and 90, and Longitude must be between -180 and 180.',
+    }).code(400);
+  }
 
   const id = nanoid(10);
   const bucketFormat = nanoid(5);
