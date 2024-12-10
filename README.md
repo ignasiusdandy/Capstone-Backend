@@ -175,7 +175,7 @@ docker-compose up -d
 ```
 
 ## Port
-Backend server port   = 5000
+Backend server port   = 5000 <br>
 Machine learning port = 3000
 
 ## Setup Google Cloud
