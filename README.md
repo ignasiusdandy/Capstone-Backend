@@ -156,7 +156,6 @@ docker ps
 
 -- login to mysql docker
 docker exec -it <container_id_or_name> mysql -u root -p
-docker exec -it mysql_db mysql -u root -p'dandy' -h 127.0.0.1
 
 -- login to node server
 docker exec -it node_app /bin/sh
