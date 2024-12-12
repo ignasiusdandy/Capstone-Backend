@@ -238,3 +238,19 @@ Compute Instance Admin
 6. Klik done <br>
 7. For firewall rule correct all checkbox <br>
 8. Klik Create
+
+### Create Cloud SQL
+1. Go to Cloud SQL
+2. Klik "create instance"
+3. Choose mysql
+4. Choose Cloud SQL Edition: Enterprise
+5. Choose preset: Development
+6. Instance ID: petpoint-mysql
+7. Set your password
+8. Choose Region: asia-southeast2
+9. Zonal availability: Single zone
+10. klik Show Configuration Options
+11. Machine configuration: Shared core with 1 vCPU, 0.614 GB
+12. Storage: SSD 10 GB close check "enable automatic storage increases"
+13. Connections: enter with your connection server
+14. Klik Create instance
